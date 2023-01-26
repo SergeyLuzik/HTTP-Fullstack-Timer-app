@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet"  type="text/css" href="/app/styles.css" />
+    <title>Work timer app</title>
+  </head>
+  <body>
+    <section class="time-balance">
+      <h2>Баланс времени</h2>
+      <div class="time-balance__wrapper">
+        <p class="time-balance__value"></p>
+      </div>
+    </section>
+    <section class="time-cards">
+      <button class="time-cards__download-more-btn" type="button">
+        Загрузить еще
+      </button>
+      <ol class="time-cards-list">
+        <li class="time-card">
+          <div class="time-card__day-block">
+            <div class="day-block__week-day">
+              <p class="day-block__week-day-value">ПН</p>
+            </div>
+            <time class="day-block__month-day-value" datetime="2023-08-11"
+              >11 АВГ</time
+            >
+          </div>
+          <div class="time-card__day-info">
+            <div class="time-card__day-timeline">
+              <div class="day-timeline__start-time">
+                <time
+                  class="day-timeline__start-time-value"
+                  datetime="2023-08-11T07:30"
+                  >7:30</time
+                >
+              </div>
+              <div class="day-timeline__work-time-total">
+                <p class="day-timeline__work-time-total-value">8 ч 00 м</p>
+              </div>
+              <div class="day-timeline__end-time">
+                <time
+                  class="day-timeline__end-time-value"
+                  datetime="2023-08-11T07:30"
+                  >16:00</time
+                >
+              </div>
+            </div>
+            <table class="time-card__breaks"> 
+              <tbody>
+                <tr>
+                  <td>7:45 - 18:00</td>
+                  <td>1 ч 15 м</td>
+                  <td>7:45 - 8:00</td>
+                  <td>1 ч 15 м</td>
+                </tr>
+                <tr>
+                  <td>7:45 - 18:00</td>
+                  <td>15 м</td>
+                  <td>7:45 - 8:00</td>
+                  <td>1 ч 15 м</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+      </ol>
+    </section>
+    <section class="control-panel">
+      <div class="control-panel__block">
+        <button
+          class="control-panel__btn-start-pause"
+          type="button"
+        ></button>
+        <button class="control-panel__btn-stop" type="button"></button>
+        <p class="control-panel__time-forcast-text">Можно закончить в</p>
+        <div class="control-panel__time-forcast-wrapper">
+          <p class="control-panel__time-forcast-value"></p>
+        </div>
+      </div>
+    </section>
+    <script src="/app/app.js"></script>
+  </body>
+</html>

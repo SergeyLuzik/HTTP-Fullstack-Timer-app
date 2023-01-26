@@ -1,0 +1,17 @@
+{
+  "name": "nodejs-sandbox",
+  "version": "1.0.0",
+  "description": "Fullstack work timer",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Sergey Luzik",
+  "devDependencies": {
+    "@types/node": "^20.2.3",
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {}
+}

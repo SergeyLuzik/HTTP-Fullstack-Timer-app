@@ -1,0 +1,315 @@
+:root {
+  --main-color: #2f80ed;
+  --middle-color: #dff1ff;
+  --lite-color: #83bdf6;
+
+  --white-color: #ffffff;
+  --block-border-radius: 10px;
+}
+/* Задаем всему border-box */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+img {
+  box-sizing: content-box;
+}
+
+/* Почему так правильно: https://github.com/rtivital/jsraccoon/blob/master/advices/box-sizing.md
+https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
+ */
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-family: sans-serif;
+  margin: 0;
+
+  width: 390px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  /*height: 844px;*/
+
+  background: #fbfbfb;
+}
+
+section {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+.time-balance {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8px;
+  gap: 8px;
+  width: 374px;
+  height: 48px;
+  border-radius: var(--block-border-radius);
+  background: var(--main-color);
+}
+.time-balance h2 {
+  font-size: 22px;
+  margin: 0;
+  color: var(--white-color);
+}
+
+.time-balance__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 32px;
+  border-radius: var(--block-border-radius);
+  background-color: var(--white-color);
+  font-size: 20px;
+  letter-spacing: -0.08em;
+  color: var(--main-color);
+}
+
+.time-cards__download-more-btn {
+  width: 132px;
+  height: 28px;
+  border: 0;
+  display: block;
+  margin: 8px auto;
+  border-radius: var(--block-border-radius);
+  background: var(--white-color);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.08);
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--main-color);
+}
+
+.time-cards {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--main-color) #e8e8e8;
+  width: 366px;
+  height: calc(100vh - 120px);
+}
+
+.time-cards::-webkit-scrollbar {
+  width: 8px; /* Ширина всего элемента навигации */
+}
+
+.time-cards::-webkit-scrollbar-track {
+  background: #e8e8e8; /* Цвет дорожки */
+}
+
+.time-cards::-webkit-scrollbar-thumb {
+  background-color: var(--main-color); /* Цвет бегунка */
+  border-radius: 10px; /* Округление бегунка */
+  border: 0; /* Оформление границ бегунка */
+}
+
+.time-cards-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.time-card {
+  display: flex;
+  width: 358px;
+  height: 100px;
+  background: var(--white-color);
+  /* padding: 16px 16px 16px 8px;*/
+  border-radius: var(--block-border-radius);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.08);
+  margin-bottom: 8px;
+}
+
+.time-card__day-block {
+  width: 52px;
+  height: 60px;
+  border-radius: 14px;
+  background: var(--middle-color);
+  margin: auto 16px auto 4px;
+  padding: 4px;
+  color: var(--main-color);
+  letter-spacing: -0.055em;
+  text-align: center;
+}
+
+.day-block__week-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 36px;
+  border-radius: var(--block-border-radius);
+  background: var(--white-color);
+  font-size: 24px;
+}
+
+.day-block__month-day-value {
+  font-size: 13px;
+}
+
+.time-card__day-timeline {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  width: 266px;
+  font-size: 17px;
+  letter-spacing: -0.06em;
+}
+
+.day-timeline__start-time,
+.day-timeline__end-time {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 52px;
+  height: 20px;
+  border-radius: 12px;
+  background: var(--middle-color);
+  color: var(--main-color);
+}
+
+.day-timeline__work-time-total {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 82px;
+  height: 20px;
+  border-radius: 12px;
+  background: var(--main-color);
+  color: var(--white-color);
+}
+
+.day-timeline__work-time-total::before,
+.day-timeline__work-time-total::after {
+  content: "";
+  position: absolute;
+
+  width: 40px;
+  border-bottom: dashed 2px var(--main-color);
+}
+
+.day-timeline__work-time-total::after {
+  left: -40px;
+}
+
+.day-timeline__work-time-total::before {
+  left: 82px;
+}
+
+.time-card__breaks td {
+  padding: 0 0 4px 0;
+  line-height: 10px;
+  font-size: 15px;
+  letter-spacing: -0.08em;
+}
+
+.time-card__breaks td:nth-child(odd) {
+  font-weight: 600;
+  color: var(--lite-color);
+}
+
+.time-card__breaks td:nth-child(even) {
+  padding-left: 4px;
+  color: var(--main-color);
+}
+
+.time-card__breaks td:nth-child(3) {
+  padding-left: 14px;
+}
+
+.control-panel {
+  width: 374px;
+  height: 72px;
+}
+
+.control-panel__block {
+  display: flex;
+  align-items: center;
+  width: 374px;
+  height: 64px;
+  background: var(--main-color);
+  border-radius: var(--block-border-radius);
+}
+
+.control-panel__btn-start-pause {
+  /* todo добавить на кнопки стиль при нажатии scale? уменьшить и увеличить*/
+  display: block;
+  margin-left: 4px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: solid 6px var(--main-color);
+  background-color: var(--white-color);
+}
+
+.btn_start {
+  background-image: url("/app/svg/play.svg");
+  background-repeat: no-repeat;
+  background-position: 20px center;
+}
+
+.btn_pause {
+  background-image: url("/app/svg/pause.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.control-panel__btn-start-pause:active {
+  transform: scale(0.8);
+}
+
+.control-panel__btn-stop {
+  margin-left: 24px;
+  display: block;
+  border: 0;
+  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  background: var(--white-color);
+}
+
+.control-panel__btn-stop:active {
+  transform: scale(0.8);
+}
+
+.control-panel__time-forcast-text {
+  margin-left: 16px;
+  width: 102px;
+  text-align: right;
+  color: var(--white-color);
+  font-size: 17px;
+  line-height: 17px;
+  letter-spacing: -0.03em;
+}
+
+.control-panel__time-forcast-wrapper {
+  display: flex;
+  margin-left: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 40px;
+  border-radius: var(--block-border-radius);
+  background-color: var(--white-color);
+  color: var(--main-color);
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
