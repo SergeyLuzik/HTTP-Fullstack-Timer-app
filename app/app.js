@@ -88,7 +88,17 @@ startPauseButton.addEventListener("click", function () {
       // СТАРТ НОВОГО ДНЯ:
       //  let timeCardsList = document.querySelector(".time-cards-list"); // уже объявлена глобально в самом верху
       // вставить новую карточку с днем с классом current-day в конец списка time-cards
-      timeCardsList.insertAdjacentHTML("beforeend", `тут должен быть шаблон`);
+
+      fetch("/app/emptyTimeCard.html")
+        .then((response) => {
+          return response.text();
+        })
+        .then((emptyTimeCard) => {
+          timeCardsList.insertAdjacentHTML("beforeend", emptyTimeCard);
+        })
+        .catch((err) => {
+          console.log("Запрос не выполнен!" + err);
+        });
 
       //добавить время начала дня
       // расчитать прогноз времени конца дня
@@ -96,6 +106,7 @@ startPauseButton.addEventListener("click", function () {
         "16:00"; // установить прогноз в ячейку
       // отправить на сервер новую карточку с временем начала
       // обновить время прогноза
+      // обновить время прогноза на сервере
     } else {
       //  КОНЕЦ ПЕРЕРЫВА:
       // добавить время конца перерыва
