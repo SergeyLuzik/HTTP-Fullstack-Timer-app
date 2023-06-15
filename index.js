@@ -69,6 +69,16 @@ http
           );
           break;
 
+        case "/app/timeCardTemplate.html":
+          fs.readFile(__dirname + "/app/timeCardTemplate.html").then(
+            (contents) => {
+              res.writeHead(200, { "Content-Type": "text/html" });
+              res.write(contents);
+              res.end();
+            }
+          );
+          break;
+
         case "/app/timeCards":
           fs.readFile(__dirname + "/db.json").then((contents) => {
             const jsonData = JSON.parse(contents);
