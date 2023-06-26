@@ -2,6 +2,30 @@
 
 let timeCardsList = document.querySelector(".time-cards-list");
 
+const weekDays = {
+  0: "ВС",
+  1: "ПН",
+  2: "ВТ",
+  3: "СР",
+  4: "ЧТ",
+  5: "ПТ",
+  6: "СБ",
+};
+
+const monthsList = {
+  0: "ЯНВ",
+  1: "ФЕВ",
+  2: "МАР",
+  3: "АПР",
+  4: "МАЙ",
+  5: "ИЮН",
+  6: "ИЮЛ",
+  7: "АВГ",
+  8: "СЕН",
+  9: "ОКТ",
+  10: "НОЯ",
+  11: "ДЕК",
+};
 fetch("/app/state")
   .then((response) => {
     return response.json();
@@ -80,32 +104,55 @@ startPauseButton.addEventListener("click", function () {
   if (startPauseButton.classList.contains("btn_start")) {
     // клик по кнопке СТАРТ
     startPauseButton.classList.replace("btn_start", "btn_pause"); // меняем класс btn_start на btn-pause
+    // обновить класс кнопки на сервере
     let timeForcast = document.querySelector(
       ".control-panel__time-forcast-value"
     );
     if (timeForcast.textContent === "") {
-      // если в timeForcast пусто
-      // СТАРТ НОВОГО ДНЯ:
-      //  let timeCardsList = document.querySelector(".time-cards-list"); // уже объявлена глобально в самом верху
-      // вставить новую карточку с днем с классом current-day в конец списка time-cards
+      // если в timeForcast пусто это СТАРТ НОВОГО ДНЯ:
 
+      // вставить новую карточку с днем с классом current-day в конец списка time-cards
       fetch("/app/emptyTimeCard.html")
         .then((response) => {
           return response.text();
         })
         .then((emptyTimeCard) => {
           timeCardsList.insertAdjacentHTML("beforeend", emptyTimeCard);
+          const currentDayCartd = document.querySelector(
+            ".time-card:last-child"
+          );
+
+          const currentDate = new Date(); //создать дату и время начала дня
+          // расчитать прогноз времени конца дня
+          //добавить в карточку
+
+          currentDayCartd.querySelector(
+            ".day-block__month-day-value"
+          ).textContent = `${currentDate.getDate()} ${
+            monthsList[currentDate.getMonth()]
+          }`;
+          currentDayCartd.querySelector(
+            ".day-block__week-day-value"
+          ).textContent = weekDays[currentDate.getDay()];
+
+          //TODO как вычислять прошедшее время, если времена текстовые в коде и на сервере?
+          // TODO заводить переменные т.к. потом еще это же отправлять на сервер
+          currentDayCartd.querySelector(
+            ".day-timeline__start-time-value"
+          ).textContent = `${currentDate.getHours()}:${currentDate
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`; // getMinutes выдает не 03 минуты а 3, получается 10:2
+          timeForcast.textContent = `${currentDate.getHours() + 8}:${currentDate
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`; // todo дублирование кода (завести отдельно правильные minuts чтобы два раза не делать padStart)
         })
         .catch((err) => {
           console.log("Запрос не выполнен!" + err);
         });
 
-      //добавить время начала дня
-      // расчитать прогноз времени конца дня
-      document.querySelector(".control-panel__time-forcast-value").textContent =
-        "16:00"; // установить прогноз в ячейку
       // отправить на сервер новую карточку с временем начала
-      // обновить время прогноза
       // обновить время прогноза на сервере
     } else {
       //  КОНЕЦ ПЕРЕРЫВА:
