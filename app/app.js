@@ -105,10 +105,10 @@ startPauseButton.addEventListener("click", function () {
     // клик по кнопке СТАРТ
     startPauseButton.classList.replace("btn_start", "btn_pause"); // меняем класс btn_start на btn-pause
     // обновить класс кнопки на сервере
-    let timeForcast = document.querySelector(
+    let timeForcastField = document.querySelector(
       ".control-panel__time-forcast-value"
     );
-    if (timeForcast.textContent === "") {
+    if (timeForcastField.textContent === "") {
       // если в timeForcast пусто это СТАРТ НОВОГО ДНЯ:
 
       // вставить новую карточку с днем с классом current-day в конец списка time-cards
@@ -118,42 +118,58 @@ startPauseButton.addEventListener("click", function () {
         })
         .then((emptyTimeCard) => {
           timeCardsList.insertAdjacentHTML("beforeend", emptyTimeCard);
-          const currentDayCartd = document.querySelector(
+          const currentDayCard = document.querySelector(
             ".time-card:last-child"
           );
 
           const currentDate = new Date(); //создать дату и время начала дня
           // расчитать прогноз времени конца дня
           //добавить в карточку
-
-          currentDayCartd.querySelector(
-            ".day-block__month-day-value"
-          ).textContent = `${currentDate.getDate()} ${
+          const monthDay = `${currentDate.getDate()} ${
             monthsList[currentDate.getMonth()]
           }`;
-          currentDayCartd.querySelector(
-            ".day-block__week-day-value"
-          ).textContent = weekDays[currentDate.getDay()];
+          const weekDay = weekDays[currentDate.getDay()];
+          //const hours = currentDate.getHours();
+          const minutes = currentDate.getMinutes().toString().padStart(2, "0"); // getMinutes выдает не 03 минуты а 3, получается 10:2
+          const dayStartTime = `${currentDate.getHours()}:${minutes}`;
+          const timeForcast = `${currentDate.getHours() + 8}:${minutes}`;
 
-          //TODO как вычислять прошедшее время, если времена текстовые в коде и на сервере?
+          currentDayCard.querySelector(
+            ".day-block__month-day-value"
+          ).textContent = monthDay;
+
+          currentDayCard.querySelector(
+            ".day-block__week-day-value"
+          ).textContent = weekDay;
+
+          //TODO как вычислять прошедшее время, если времена текстовые в коде и на сервере? Использовать тег time?
           // TODO заводить переменные т.к. потом еще это же отправлять на сервер
-          currentDayCartd.querySelector(
+
+          currentDayCard.querySelector(
             ".day-timeline__start-time-value"
-          ).textContent = `${currentDate.getHours()}:${currentDate
-            .getMinutes()
-            .toString()
-            .padStart(2, "0")}`; // getMinutes выдает не 03 минуты а 3, получается 10:2
-          timeForcast.textContent = `${currentDate.getHours() + 8}:${currentDate
-            .getMinutes()
-            .toString()
-            .padStart(2, "0")}`; // todo дублирование кода (завести отдельно правильные minuts чтобы два раза не делать padStart)
+          ).textContent = dayStartTime;
+          timeForcastField.textContent = timeForcast;
+
+          fetch("/app/timeCards", {
+            method: "POST",
+            body: JSON.stringify({
+              monthDay: monthDay,
+              weekDay: weekDay,
+              dayStartTime: dayStartTime,
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          })
+            .then((response) => response.json())
+            .then((json) => console.log(json));
+          // обновить время прогноза на сервере
         })
         .catch((err) => {
           console.log("Запрос не выполнен!" + err);
         });
 
       // отправить на сервер новую карточку с временем начала
-      // обновить время прогноза на сервере
     } else {
       //  КОНЕЦ ПЕРЕРЫВА:
       // добавить время конца перерыва

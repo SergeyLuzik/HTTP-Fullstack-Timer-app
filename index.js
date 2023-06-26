@@ -89,6 +89,11 @@ http
           break;
       }
     } else if (req.method === "POST") {
+      if (req.url === "/app/timeCards") {
+        const body = {};
+        req.on("data", (chunk) => body.assign(chunk));
+        console.log(body);
+      }
     }
   })
   .listen(8080); //the server object listens on port 8080
