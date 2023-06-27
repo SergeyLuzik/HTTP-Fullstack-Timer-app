@@ -26,6 +26,11 @@ const monthsList = {
   10: "НОЯ",
   11: "ДЕК",
 };
+
+function getMinutes(date) {
+  return date.getMinutes().toString().padStart(2, "0");
+}
+
 fetch("/app/state")
   .then((response) => {
     return response.json();
@@ -129,7 +134,7 @@ startPauseButton.addEventListener("click", function () {
           }`;
           const weekDay = weekDays[currentDate.getDay()];
           //const hours = currentDate.getHours();
-          const minutes = currentDate.getMinutes().toString().padStart(2, "0"); // getMinutes выдает не 03 минуты а 3, получается 10:2
+          const minutes = getMinutes(currentDate); // getMinutes выдает не 03 минуты а 3, получается 10:2
           const dayStartTime = `${currentDate.getHours()}:${minutes}`;
           const timeForcast = `${currentDate.getHours() + 8}:${minutes}`;
 
@@ -197,6 +202,7 @@ startPauseButton.addEventListener("click", function () {
     // залетаем в псоледний tr (т.к. следующий создаем только когда заполнен предыдущий)
     // если в tr уже есть 2 td, то один перерыв уже прошел (есть время перерыва)
     //
+    const currentDate = new Date();
     // ставим начало паузы
   }
 });
