@@ -62,14 +62,14 @@ fetch("/app/timeCardTemplate.html")
             /\{\{(\w+)\}\}/g,
             (_, prop) => {
               return timeCard[prop] || "";
-            }
+            },
           );
           timeCardsList.insertAdjacentHTML("beforeend", filledTimeCard);
 
           if (timeCard.breaks.length > 0) {
             // todo спросить у GPT эффективный алгоритм вставки перерывов
             let breaksTable = document.querySelector(
-              ".time-card:last-child tbody"
+              ".time-card:last-child tbody",
             );
             for (let i = 0; i < timeCard.breaks.length; i++) {
               if (i % 2 === 0) {
@@ -96,7 +96,7 @@ fetch("/app/timeCardTemplate.html")
   });
 
 const startPauseButton = document.querySelector(
-  ".control-panel__btn-start-pause"
+  ".control-panel__btn-start-pause",
 );
 const stopButton = document.querySelector(".control-panel__btn-stop");
 
@@ -104,9 +104,9 @@ startPauseButton.addEventListener("click", function () {
   if (startPauseButton.classList.contains("btn_start")) {
     // клик по кнопке СТАРТ
     startPauseButton.classList.replace("btn_start", "btn_pause"); // меняем класс btn_start на btn-pause
-    // обновить класс кнопки на сервере
+
     let timeForcastField = document.querySelector(
-      ".control-panel__time-forcast-value"
+      ".control-panel__time-forcast-value",
     );
     if (timeForcastField.textContent === "") {
       // если в timeForcast пусто это СТАРТ НОВОГО ДНЯ:
@@ -119,12 +119,11 @@ startPauseButton.addEventListener("click", function () {
         .then((emptyTimeCard) => {
           timeCardsList.insertAdjacentHTML("beforeend", emptyTimeCard);
           const currentDayCard = document.querySelector(
-            ".time-card:last-child"
+            ".time-card:last-child",
           );
 
-          const currentDate = new Date(); //создать дату и время начала дня
-          // расчитать прогноз времени конца дня
-          //добавить в карточку
+          const currentDate = new Date();
+
           const monthDay = `${currentDate.getDate()} ${
             monthsList[currentDate.getMonth()]
           }`;
@@ -135,18 +134,17 @@ startPauseButton.addEventListener("click", function () {
           const timeForcast = `${currentDate.getHours() + 8}:${minutes}`;
 
           currentDayCard.querySelector(
-            ".day-block__month-day-value"
+            ".day-block__month-day-value",
           ).textContent = monthDay;
 
           currentDayCard.querySelector(
-            ".day-block__week-day-value"
+            ".day-block__week-day-value",
           ).textContent = weekDay;
 
           //TODO как вычислять прошедшее время, если времена текстовые в коде и на сервере? Использовать тег time?
-          // TODO заводить переменные т.к. потом еще это же отправлять на сервер
 
           currentDayCard.querySelector(
-            ".day-timeline__start-time-value"
+            ".day-timeline__start-time-value",
           ).textContent = dayStartTime;
           timeForcastField.textContent = timeForcast;
 
@@ -163,13 +161,23 @@ startPauseButton.addEventListener("click", function () {
           })
             .then((response) => response.json())
             .then((json) => console.log(json));
-          // обновить время прогноза на сервере
+
+          fetch("/app/state", {
+            method: "PATCH",
+            body: JSON.stringify({
+              timeForcast: timeForcast,
+              startPauseButtonClass: "btn_pause",
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          })
+            .then((response) => response.json())
+            .then((json) => console.log(json));
         })
         .catch((err) => {
           console.log("Запрос не выполнен!" + err);
         });
-
-      // отправить на сервер новую карточку с временем начала
     } else {
       //  КОНЕЦ ПЕРЕРЫВА:
       // добавить время конца перерыва

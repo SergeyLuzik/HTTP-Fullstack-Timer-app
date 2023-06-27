@@ -1,3 +1,4 @@
+const { log } = require("console");
 const http = require("http");
 const fs = require("fs").promises;
 
@@ -52,9 +53,9 @@ http
 
         case "/app/state":
           fs.readFile(__dirname + "/db.json").then((contents) => {
-            const jsonData = JSON.parse(contents);
+            const dbData = JSON.parse(contents);
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.write(JSON.stringify(jsonData.state));
+            res.write(JSON.stringify(dbData.state));
             res.end();
           });
           break;
@@ -65,7 +66,7 @@ http
               res.writeHead(200, { "Content-Type": "text/html" });
               res.write(contents);
               res.end();
-            }
+            },
           );
           break;
 
@@ -75,24 +76,59 @@ http
               res.writeHead(200, { "Content-Type": "text/html" });
               res.write(contents);
               res.end();
-            }
+            },
           );
           break;
 
         case "/app/timeCards":
           fs.readFile(__dirname + "/db.json").then((contents) => {
-            const jsonData = JSON.parse(contents);
+            const dbData = JSON.parse(contents);
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.write(JSON.stringify(jsonData.timeCards));
+            res.write(JSON.stringify(dbData.timeCards));
             res.end();
           });
           break;
       }
     } else if (req.method === "POST") {
       if (req.url === "/app/timeCards") {
-        const body = {};
-        req.on("data", (chunk) => body.assign(chunk));
-        console.log(body);
+        let body = "";
+        req
+          .on("data", (chunk) => (body += chunk.toString()))
+          .on("end", () => {
+            // const data = ;
+            fs.readFile(__dirname + "/db.json").then((contents) => {
+              const dbData = JSON.parse(contents);
+              dbData.timeCards.push(JSON.parse(body));
+              //console.log(dbData);
+              fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
+
+              //res.writeHead(200, { "Content-Type": "application/json" });
+              // res.write(JSON.stringify(dbData.state));
+              res.end();
+            });
+          });
+      }
+    } else if (req.method === "PATCH") {
+      if (req.url === "/app/state") {
+        let body = "";
+        req
+          .on("data", (chunk) => (body += chunk.toString()))
+          .on("end", () => {
+            fs.readFile(__dirname + "/db.json").then((contents) => {
+              const dbData = JSON.parse(contents);
+              const bodyObj = JSON.parse(body);
+
+              for (const key in bodyObj) {
+                dbData.state[key] = bodyObj[key];
+              }
+
+              fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
+
+              //res.writeHead(200, { "Content-Type": "application/json" });
+              // res.write(JSON.stringify(dbData.state));
+              res.end();
+            });
+          });
       }
     }
   })
