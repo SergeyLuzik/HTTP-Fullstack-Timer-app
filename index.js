@@ -102,8 +102,8 @@ http
               //console.log(dbData);
               fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
 
-              //res.writeHead(200, { "Content-Type": "application/json" });
-              // res.write(JSON.stringify(dbData.state));
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.write(JSON.stringify(dbData));
               res.end();
             });
           });
@@ -124,8 +124,8 @@ http
 
               fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
 
-              //res.writeHead(200, { "Content-Type": "application/json" });
-              // res.write(JSON.stringify(dbData.state));
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.write(JSON.stringify(dbData.state));
               res.end();
             });
           });
