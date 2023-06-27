@@ -160,7 +160,10 @@ p {
 }
 
 .day-block__month-day-value {
-  font-size: 13px;
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .time-card__day-timeline {

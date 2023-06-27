@@ -2,6 +2,30 @@
 
 let timeCardsList = document.querySelector(".time-cards-list");
 
+const weekDays = {
+  0: "ВС",
+  1: "ПН",
+  2: "ВТ",
+  3: "СР",
+  4: "ЧТ",
+  5: "ПТ",
+  6: "СБ",
+};
+
+const monthsList = {
+  0: "ЯНВ",
+  1: "ФЕВ",
+  2: "МАР",
+  3: "АПР",
+  4: "МАЙ",
+  5: "ИЮН",
+  6: "ИЮЛ",
+  7: "АВГ",
+  8: "СЕН",
+  9: "ОКТ",
+  10: "НОЯ",
+  11: "ДЕК",
+};
 fetch("/app/state")
   .then((response) => {
     return response.json();
@@ -38,14 +62,14 @@ fetch("/app/timeCardTemplate.html")
             /\{\{(\w+)\}\}/g,
             (_, prop) => {
               return timeCard[prop] || "";
-            }
+            },
           );
           timeCardsList.insertAdjacentHTML("beforeend", filledTimeCard);
 
           if (timeCard.breaks.length > 0) {
             // todo спросить у GPT эффективный алгоритм вставки перерывов
             let breaksTable = document.querySelector(
-              ".time-card:last-child tbody"
+              ".time-card:last-child tbody",
             );
             for (let i = 0; i < timeCard.breaks.length; i++) {
               if (i % 2 === 0) {
@@ -72,7 +96,7 @@ fetch("/app/timeCardTemplate.html")
   });
 
 const startPauseButton = document.querySelector(
-  ".control-panel__btn-start-pause"
+  ".control-panel__btn-start-pause",
 );
 const stopButton = document.querySelector(".control-panel__btn-stop");
 
@@ -80,22 +104,80 @@ startPauseButton.addEventListener("click", function () {
   if (startPauseButton.classList.contains("btn_start")) {
     // клик по кнопке СТАРТ
     startPauseButton.classList.replace("btn_start", "btn_pause"); // меняем класс btn_start на btn-pause
-    let timeForcast = document.querySelector(
-      ".control-panel__time-forcast-value"
-    );
-    if (timeForcast.textContent === "") {
-      // если в timeForcast пусто
-      // СТАРТ НОВОГО ДНЯ:
-      //  let timeCardsList = document.querySelector(".time-cards-list"); // уже объявлена глобально в самом верху
-      // вставить новую карточку с днем с классом current-day в конец списка time-cards
-      timeCardsList.insertAdjacentHTML("beforeend", `тут должен быть шаблон`);
 
-      //добавить время начала дня
-      // расчитать прогноз времени конца дня
-      document.querySelector(".control-panel__time-forcast-value").textContent =
-        "16:00"; // установить прогноз в ячейку
-      // отправить на сервер новую карточку с временем начала
-      // обновить время прогноза
+    let timeForcastField = document.querySelector(
+      ".control-panel__time-forcast-value",
+    );
+    if (timeForcastField.textContent === "") {
+      // если в timeForcast пусто это СТАРТ НОВОГО ДНЯ:
+
+      // вставить новую карточку с днем с классом current-day в конец списка time-cards
+      fetch("/app/emptyTimeCard.html")
+        .then((response) => {
+          return response.text();
+        })
+        .then((emptyTimeCard) => {
+          timeCardsList.insertAdjacentHTML("beforeend", emptyTimeCard);
+          const currentDayCard = document.querySelector(
+            ".time-card:last-child",
+          );
+
+          const currentDate = new Date();
+
+          const monthDay = `${currentDate.getDate()} ${
+            monthsList[currentDate.getMonth()]
+          }`;
+          const weekDay = weekDays[currentDate.getDay()];
+          //const hours = currentDate.getHours();
+          const minutes = currentDate.getMinutes().toString().padStart(2, "0"); // getMinutes выдает не 03 минуты а 3, получается 10:2
+          const dayStartTime = `${currentDate.getHours()}:${minutes}`;
+          const timeForcast = `${currentDate.getHours() + 8}:${minutes}`;
+
+          currentDayCard.querySelector(
+            ".day-block__month-day-value",
+          ).textContent = monthDay;
+
+          currentDayCard.querySelector(
+            ".day-block__week-day-value",
+          ).textContent = weekDay;
+
+          //TODO как вычислять прошедшее время, если времена текстовые в коде и на сервере? Использовать тег time?
+
+          currentDayCard.querySelector(
+            ".day-timeline__start-time-value",
+          ).textContent = dayStartTime;
+          timeForcastField.textContent = timeForcast;
+
+          fetch("/app/timeCards", {
+            method: "POST",
+            body: JSON.stringify({
+              monthDay: monthDay,
+              weekDay: weekDay,
+              dayStartTime: dayStartTime,
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          })
+            .then((response) => response.json())
+            .then((json) => console.log(json));
+
+          fetch("/app/state", {
+            method: "PATCH",
+            body: JSON.stringify({
+              timeForcast: timeForcast,
+              startPauseButtonClass: "btn_pause",
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          })
+            .then((response) => response.json())
+            .then((json) => console.log(json));
+        })
+        .catch((err) => {
+          console.log("Запрос не выполнен!" + err);
+        });
     } else {
       //  КОНЕЦ ПЕРЕРЫВА:
       // добавить время конца перерыва
