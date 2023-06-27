@@ -94,7 +94,7 @@ fetch("/app/timeCardTemplate.html")
   .catch((err) => {
     console.log("Запрос не выполнен!" + err);
   });
-
+// ---- ОБРАБОТЧИКИ СОБЫТИЙ
 const startPauseButton = document.querySelector(
   ".control-panel__btn-start-pause",
 );
@@ -180,15 +180,19 @@ startPauseButton.addEventListener("click", function () {
         });
     } else {
       //  КОНЕЦ ПЕРЕРЫВА:
+      startPauseButton.classList.replace("btn_start", "btn_pause");
+
+      const currentDate = new Date();
       // добавить время конца перерыва
       // расчитать продолжительность прерыва
       // добавить продолжительность перерыва
       // пересчитать прогноз конца дня
       // поменять значение прогноза в ячейке
+      // отправить  все на сервер
     }
   } else {
     // НАЖАТИЕ НА ПАУЗУ -- НАЧАЛО ПЕРЕРЫВА
-    startPauseButton.classList.replace("btn_pause", "btn_start"); // меняем класс btn_pause на btn-start
+    startPauseButton.classList.replace("btn_pause", "btn_start");
     // куда ставить данные? в левый или правый столбец таблицы, какой заполнен
     // залетаем в псоледний tr (т.к. следующий создаем только когда заполнен предыдущий)
     // если в tr уже есть 2 td, то один перерыв уже прошел (есть время перерыва)
