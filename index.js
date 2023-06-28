@@ -126,12 +126,11 @@ http
                 lastTimeCard.breaks = []; //Создаем массив перерывов
                 lastTimeCard.breaks.push(JSON.parse(body)); //Пишем в него
               } else {
-                const lastBreak = lastTimeCard.breaks[breaks.length - 1];
-                if (lastBreak.length > 1) {
-                  //Создаем новый объект в массиве
-                  //	Пишем в него
+                if (lastTimeCard.breaks[breaks.length - 1].length > 1) {
+                  lastTimeCard.breaks.push({}); //Создаем новый объект в массиве
+                  lastTimeCard.breaks[breaks.length - 1].push(JSON.parse(body)); //	Пишем в него
                 } else {
-                  //Пишем после нее
+                  Object.assign(lastTimeCard.breaks[breaks.length - 1]); //Пишем после нее
                 }
               }
 
