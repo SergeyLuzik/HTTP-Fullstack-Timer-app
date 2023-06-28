@@ -115,13 +115,9 @@ http
             // const data = ;
             fs.readFile(__dirname + "/db.json").then((contents) => {
               const dbData = JSON.parse(contents);
-              const lastTimeCard = dbData.timeCards[timeCards.length - 1]; //.breaks.push(JSON.parse(body));
-              /* if (
-                lastTimeCard.breaks === undefined ||
-                lastTimeCard.breaks[lastTimeCard.length - 1].length > 1
-              ) {
-                
-              }*/
+
+              let lastTimeCard = dbData.timeCards[dbData.timeCards.length - 1]; //.breaks.push(JSON.parse(body));
+
               if (lastTimeCard.breaks === undefined) {
                 lastTimeCard.breaks = []; //Создаем массив перерывов
                 lastTimeCard.breaks.push(JSON.parse(body)); //Пишем в него
@@ -134,8 +130,8 @@ http
                 }
               }
 
-              //console.log(dbData);
-              fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
+              console.log(lastTimeCard.breaks);
+              //fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
 
               res.writeHead(200, { "Content-Type": "application/json" });
               res.write(JSON.stringify(dbData));
