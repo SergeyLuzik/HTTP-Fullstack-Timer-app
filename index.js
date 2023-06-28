@@ -107,6 +107,42 @@ http
               res.end();
             });
           });
+      } else if (req.url === "/app/timeCards/breaks") {
+        let body = "";
+        req
+          .on("data", (chunk) => (body += chunk.toString()))
+          .on("end", () => {
+            // const data = ;
+            fs.readFile(__dirname + "/db.json").then((contents) => {
+              const dbData = JSON.parse(contents);
+              const lastTimeCard = dbData.timeCards[timeCards.length - 1]; //.breaks.push(JSON.parse(body));
+              /* if (
+                lastTimeCard.breaks === undefined ||
+                lastTimeCard.breaks[lastTimeCard.length - 1].length > 1
+              ) {
+                
+              }*/
+              if (lastTimeCard.breaks === undefined) {
+                lastTimeCard.breaks = []; //Создаем массив перерывов
+                lastTimeCard.breaks.push(JSON.parse(body)); //Пишем в него
+              } else {
+                const lastBreak = lastTimeCard.breaks[breaks.length - 1];
+                if (lastBreak.length > 1) {
+                  //Создаем новый объект в массиве
+                  //	Пишем в него
+                } else {
+                  //Пишем после нее
+                }
+              }
+
+              //console.log(dbData);
+              fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
+
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.write(JSON.stringify(dbData));
+              res.end();
+            });
+          });
       }
     } else if (req.method === "PATCH") {
       if (req.url === "/app/state") {

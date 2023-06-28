@@ -75,7 +75,7 @@ fetch("/app/timeCardTemplate.html")
             // todo спросить у GPT эффективный алгоритм вставки перерывов
             let breaksTable = document.querySelector(
               ".time-card:last-child tbody",
-            );
+            ); // todo используется многократно
             for (let i = 0; i < timeCard.breaks.length; i++) {
               if (i % 2 === 0) {
                 breaksTable.append(document.createElement("tr"));
@@ -134,7 +134,7 @@ startPauseButton.addEventListener("click", function () {
           }`;
           const weekDay = weekDays[currentDate.getDay()];
           //const hours = currentDate.getHours();
-          const minutes = getMinutes(currentDate); // getMinutes выдает не 03 минуты а 3, получается 10:2
+          const minutes = getMinutes(currentDate);
           const dayStartTime = `${currentDate.getHours()}:${minutes}`;
           const timeForcast = `${currentDate.getHours() + 8}:${minutes}`;
 
@@ -198,12 +198,45 @@ startPauseButton.addEventListener("click", function () {
   } else {
     // НАЖАТИЕ НА ПАУЗУ -- НАЧАЛО ПЕРЕРЫВА
     startPauseButton.classList.replace("btn_pause", "btn_start");
-    // куда ставить данные? в левый или правый столбец таблицы, какой заполнен
-    // залетаем в псоледний tr (т.к. следующий создаем только когда заполнен предыдущий)
-    // если в tr уже есть 2 td, то один перерыв уже прошел (есть время перерыва)
-    //
+
+    //const breaksTableRow = breaksTable.querySelector("tr:last-child");
+    /* if (breaksTableRow === "null") {
+      breaksTable.insertRow();
+      breaksTableRow = breaksTable.querySelector("tr:last-child");
+    }
+  
+    const breaksTableRow =
+      breaksTable.rows.length > 0
+        ? breaksTable.querySelector("tr:last-child")
+        : breaksTable.insertRow(); // указывает всегда на last tr
+
+    if (breaksTableRow.cells.length > 2) {
+    }
+*/ const breaksTable = document.querySelector(".time-card:last-child tbody");
     const currentDate = new Date();
-    // ставим начало паузы
+    const minutes = getMinutes(currentDate);
+    const breakStartTime = `${currentDate.getHours()}:${minutes}`;
+    if (
+      breaksTable.rows.length === 0 ||
+      breaksTable.querySelector("tr:last-child").cells.length > 2
+    ) {
+      breaksTable.insertRow().insertCell().textContent = breakStartTime;
+    } else {
+      breaksTable.querySelector("tr:last-child").insertCell().textContent =
+        breakStartTime;
+    }
+    // отправка на сервер
+    fetch("/app/timeCards/breaks", {
+      method: "POST",
+      body: JSON.stringify({
+        breakStartTime: breakStartTime,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => console.log(json));
   }
 });
 
