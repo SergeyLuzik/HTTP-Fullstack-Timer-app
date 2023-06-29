@@ -198,21 +198,7 @@ startPauseButton.addEventListener("click", function () {
   } else {
     // НАЖАТИЕ НА ПАУЗУ -- НАЧАЛО ПЕРЕРЫВА
     startPauseButton.classList.replace("btn_pause", "btn_start");
-
-    //const breaksTableRow = breaksTable.querySelector("tr:last-child");
-    /* if (breaksTableRow === "null") {
-      breaksTable.insertRow();
-      breaksTableRow = breaksTable.querySelector("tr:last-child");
-    }
-  
-    const breaksTableRow =
-      breaksTable.rows.length > 0
-        ? breaksTable.querySelector("tr:last-child")
-        : breaksTable.insertRow(); // указывает всегда на last tr
-
-    if (breaksTableRow.cells.length > 2) {
-    }
-*/ const breaksTable = document.querySelector(".time-card:last-child tbody");
+    const breaksTable = document.querySelector(".time-card:last-child tbody");
     const currentDate = new Date();
     const minutes = getMinutes(currentDate);
     const breakStartTime = `${currentDate.getHours()}:${minutes}`;
