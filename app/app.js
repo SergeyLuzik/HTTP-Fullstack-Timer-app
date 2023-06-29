@@ -188,6 +188,30 @@ startPauseButton.addEventListener("click", function () {
       startPauseButton.classList.replace("btn_start", "btn_pause");
 
       const currentDate = new Date();
+      const minutes = getMinutes(currentDate);
+      const breakEndTime = `${currentDate.getHours()}:${minutes}`;
+      const breaksTable = document.querySelector(".time-card:last-child tbody");
+
+      breaksTable.querySelector(
+        "tr:last-child td",
+      ).textContent += ` - ${breakEndTime}`; // добавить время конца перерыва
+
+      // breaksTable.querySelector("tr:last-child").insertCell().textContent =
+      //   breakTimeTotal;
+
+      // отправка на сервер
+      /*  fetch("/app/timeCards/breaks", {
+        method: "POST",
+        body: JSON.stringify({
+          breakStartTime: breakStartTime,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+*/
       // добавить время конца перерыва
       // расчитать продолжительность прерыва
       // добавить продолжительность перерыва
@@ -223,6 +247,7 @@ startPauseButton.addEventListener("click", function () {
     })
       .then((response) => response.json())
       .then((json) => console.log(json));
+    //TODO отправить статус кнопки
   }
 });
 
