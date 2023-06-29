@@ -31,6 +31,19 @@ function getMinutes(date) {
   return date.getMinutes().toString().padStart(2, "0");
 }
 
+function calcElapsedTime(startTime, endTime) {
+  const startTimeArr = startTime.split(":");
+  const endTimeArr = endTime.split(":");
+  let hours = endTimeArr[0] - startTimeArr[0];
+  let minutes = endTimeArr[1] - startTimeArr[1];
+
+  if (minutes < 0) {
+    minutes = 60 + minutes;
+    hours--;
+  }
+  return hours === 0 ? minutes + " м " : hours + " ч " + minutes + " м ";
+}
+
 fetch("/app/state")
   .then((response) => {
     return response.json();
