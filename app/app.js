@@ -195,6 +195,7 @@ startPauseButton.addEventListener("click", function () {
       breaksTable.querySelector(
         "tr:last-child td",
       ).textContent += ` - ${breakEndTime}`; // добавить время конца перерыва
+      // расчитать продолжительность прерыва
 
       // breaksTable.querySelector("tr:last-child").insertCell().textContent =
       //   breakTimeTotal;
@@ -212,7 +213,7 @@ startPauseButton.addEventListener("click", function () {
         .then((response) => response.json())
         .then((json) => console.log(json));
 */
-      // добавить время конца перерыва
+
       // расчитать продолжительность прерыва
       // добавить продолжительность перерыва
       // пересчитать прогноз конца дня
