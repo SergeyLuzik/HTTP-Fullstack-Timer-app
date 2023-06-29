@@ -112,26 +112,34 @@ http
         req
           .on("data", (chunk) => (body += chunk.toString()))
           .on("end", () => {
-            // const data = ;
             fs.readFile(__dirname + "/db.json").then((contents) => {
               const dbData = JSON.parse(contents);
 
-              let lastTimeCard = dbData.timeCards[dbData.timeCards.length - 1]; //.breaks.push(JSON.parse(body));
-
+              let lastTimeCard = dbData.timeCards[dbData.timeCards.length - 1];
+              console.log(JSON.parse(body));
+              console.log("перед расчетом перерыва ");
+              console.log(lastTimeCard);
               if (lastTimeCard.breaks === undefined) {
-                lastTimeCard.breaks = []; //Создаем массив перерывов
-                lastTimeCard.breaks.push(JSON.parse(body)); //Пишем в него
+                lastTimeCard.breaks = [JSON.parse(body)];
               } else {
-                if (lastTimeCard.breaks[breaks.length - 1].length > 1) {
-                  lastTimeCard.breaks.push({}); //Создаем новый объект в массиве
-                  lastTimeCard.breaks[breaks.length - 1].push(JSON.parse(body)); //	Пишем в него
+                if (
+                  Object.keys(
+                    lastTimeCard.breaks[lastTimeCard.breaks.length - 1],
+                  ).length > 1
+                ) {
+                  lastTimeCard.breaks.push(JSON.parse(body));
                 } else {
-                  Object.assign(lastTimeCard.breaks[breaks.length - 1]); //Пишем после нее
+                  Object.assign(
+                    lastTimeCard.breaks[lastTimeCard.breaks.length - 1],
+                    JSON.parse(body),
+                  );
                 }
               }
-
+              console.log("после перерыва ");
+              console.log(lastTimeCard);
+              console.log("массив перерывов ");
               console.log(lastTimeCard.breaks);
-              //fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
+              fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
 
               res.writeHead(200, { "Content-Type": "application/json" });
               res.write(JSON.stringify(dbData));
