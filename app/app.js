@@ -247,7 +247,18 @@ startPauseButton.addEventListener("click", function () {
     })
       .then((response) => response.json())
       .then((json) => console.log(json));
-    //TODO отправить статус кнопки
+
+    fetch("/app/state", {
+      method: "PATCH",
+      body: JSON.stringify({
+        startPauseButtonClass: "btn_start",
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => console.log(json)); //TODO отправить статус кнопки
   }
 });
 

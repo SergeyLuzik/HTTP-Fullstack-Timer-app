@@ -1,8 +1,8 @@
 {
   "state": {
     "timeBalance": "+18 ч 15 м",
-    "startPauseButtonClass": "btn_pause",
-    "timeForcast": "18:01"
+    "startPauseButtonClass": "btn_start",
+    "timeForcast": ""
   },
   "timeCards": [
     {
@@ -62,13 +62,6 @@
           "breakTimeTotal": "15 м"
         }
       ]
-    },
-    {
-      "monthDay": "27 ИЮН",
-      "weekDay": "ВТ",
-      "dayStartTime": "10:01",
-      "breaks": [{ "breakStartTime": "10:044 "}
-    ]
-  }
-]
+    }
+  ]
 }
