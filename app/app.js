@@ -27,8 +27,8 @@ const monthsList = {
   11: "ДЕК",
 };
 
-function getMinutes(date) {
-  return date.getMinutes().toString().padStart(2, "0");
+function formatMinutes(minutes) {
+  return minutes.toString().padStart(2, "0");
 }
 
 function calcElapsedTime(startTime, endTime) {
@@ -169,7 +169,7 @@ startPauseButton.addEventListener("click", function () {
           }`;
           const weekDay = weekDays[currentDate.getDay()];
           //const hours = currentDate.getHours();
-          const minutes = getMinutes(currentDate);
+          const minutes = formatMinutes(currentDate.getMinutes());
           const dayStartTime = `${currentDate.getHours()}:${minutes}`;
           const timeForcast = `${currentDate.getHours() + 8}:${minutes}`;
 
@@ -223,7 +223,7 @@ startPauseButton.addEventListener("click", function () {
       startPauseButton.classList.replace("btn_start", "btn_pause");
 
       const currentDate = new Date();
-      const minutes = getMinutes(currentDate);
+      const minutes = formatMinutes(currentDate.getMinutes());
       const breakEndTime = `${currentDate.getHours()}:${minutes}`;
 
       const breaksTable = document.querySelector(".time-card:last-child tbody");
@@ -263,7 +263,7 @@ startPauseButton.addEventListener("click", function () {
     startPauseButton.classList.replace("btn_pause", "btn_start");
     const breaksTable = document.querySelector(".time-card:last-child tbody");
     const currentDate = new Date();
-    const minutes = getMinutes(currentDate);
+    const minutes = formatMinutes(currentDate.getMinutes());
     const breakStartTime = `${currentDate.getHours()}:${minutes}`;
     if (
       breaksTable.rows.length === 0 ||
