@@ -46,10 +46,10 @@ function calcElapsedTime(startTime, endTime) {
 
 function addTimeToForecast(forcastTime, summandTime) {
   const forcastTimeParsedArr = forcastTime.split(":");
-  const summandHoursMatch = summandTime.match(/\d+ч/);
+  const summandHoursMatch = summandTime.match(/\d+ ч/);
   const summandHours =
     summandHoursMatch === null ? 0 : parseInt(summandHoursMatch, 10);
-  const summandMinutsMatch = summandTime.match(/\d+м/);
+  const summandMinutsMatch = summandTime.match(/\d+ м/);
   const summandMinuts =
     summandMinutsMatch === null ? 0 : parseInt(summandMinutsMatch, 10);
 
