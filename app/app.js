@@ -235,9 +235,14 @@ startPauseButton.addEventListener("click", function () {
       // добавить продолжительность перерыва
       breaksTable.querySelector("tr:last-child").insertCell().textContent =
         breakTimeTotal;
-      let dayEndTimeForcast = timeForcastField.textContent;
+      const dayEndTimeForcast = timeForcastField.textContent;
 
-      //  timeForcastField.textContent = addTimeToForecast(dayEndTimeForcast, breakTimeTotal);
+      const newDayEndTimeForcast = addTimeToForecast(
+        dayEndTimeForcast,
+        breakTimeTotal,
+      );
+
+      timeForcastField.textContent = newDayEndTimeForcast;
 
       // пересчитать прогноз конца дня
 
@@ -254,6 +259,18 @@ startPauseButton.addEventListener("click", function () {
       })
         .then((response) => response.json())
         .then((json) => console.log(json));
+
+      fetch("/app/state", {
+        method: "PATCH",
+        body: JSON.stringify({
+          timeForcast: newDayEndTimeForcast,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => console.log(json)); //TODO отправить статус кнопки
 
       // поменять значение прогноза в ячейке
       // отправить  все на сервер
@@ -297,7 +314,7 @@ startPauseButton.addEventListener("click", function () {
       },
     })
       .then((response) => response.json())
-      .then((json) => console.log(json)); //TODO отправить статус кнопки
+      .then((json) => console.log(json));
   }
 });
 
