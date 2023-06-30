@@ -213,6 +213,11 @@ startPauseButton.addEventListener("click", function () {
       // добавить продолжительность перерыва
       breaksTable.querySelector("tr:last-child").insertCell().textContent =
         breakTimeTotal;
+      let dayEndTimeForcast = timeForcastField.textContent;
+
+      timeForcastField.textContent = sumTime(dayEndTimeForcast, breakTimeTotal);
+
+      // пересчитать прогноз конца дня
 
       // отправка на сервер
       fetch("/app/timeCards/breaks", {
@@ -228,7 +233,6 @@ startPauseButton.addEventListener("click", function () {
         .then((response) => response.json())
         .then((json) => console.log(json));
 
-      // пересчитать прогноз конца дня
       // поменять значение прогноза в ячейке
       // отправить  все на сервер
     }
@@ -279,7 +283,7 @@ stopButton.addEventListener("click", function () {
   //КОНЕЦ ДНЯ:
   // удалить текст в окне прогноза окончания дня
   // поставить время окончания дня
-  // расчитать отработанное время за день
+  // расчитать отработанное время за день (в прогнозе окончания дня стоит время 8ч, от него отнимать время конца дня чтобы расчитать сколько часов отработал)
   // обновить баланс времени
   // убрать класс current-day с карточки дня
 });
