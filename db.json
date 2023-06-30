@@ -1,7 +1,7 @@
 {
   "state": {
     "timeBalance": "+18 ч 15 м",
-    "startPauseButtonClass": "btn_start",
+    "startPauseButtonClass": "btn_pause",
     "timeForcast": ""
   },
   "timeCards": [
@@ -10,7 +10,7 @@
       "weekDay": "ПН",
       "dayStartTime": "7:30",
       "dayEndTime": "16:00",
-      "dayWorkTimeTotal": "8 ч 00 м",
+      "dayWorkTimeTotal": "9 ч 00 м",
       "breaks": [
         {
           "breakStartTime": "7:45",
@@ -56,12 +56,13 @@
           "breakEndTime": "15:00",
           "breakTimeTotal": "1 ч 15 м"
         },
-        {
-          "breakStartTime": "15:05",
-          "breakEndTime": "15:20",
-          "breakTimeTotal": "15 м"
-        }
+        { "breakStartTime": "8:05" }
       ]
+    },
+    {
+      "monthDay": "30 ИЮН",
+      "weekDay": "ПТ",
+      "dayStartTime": "8:41"
     }
   ]
 }
