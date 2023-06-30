@@ -203,16 +203,10 @@ startPauseButton.addEventListener("click", function () {
       const currentDate = new Date();
       const minutes = getMinutes(currentDate);
       const breakEndTime = `${currentDate.getHours()}:${minutes}`;
-      console.log("breakEndTime");
-      console.log(typeof breakEndTime);
-      console.log(breakEndTime);
 
       const breaksTable = document.querySelector(".time-card:last-child tbody");
       let lastBreak = breaksTable.querySelector("tr:last-child td");
       const dayStartTime = lastBreak.textContent;
-      console.log("dayStartTime");
-      console.log(typeof dayStartTime);
-      console.log(dayStartTime);
 
       lastBreak.textContent += ` - ${breakEndTime}`; // добавить время конца перерыва
       const breakTimeTotal = calcElapsedTime(dayStartTime, breakEndTime);
@@ -221,10 +215,11 @@ startPauseButton.addEventListener("click", function () {
         breakTimeTotal;
 
       // отправка на сервер
-      /*  fetch("/app/timeCards/breaks", {
+      fetch("/app/timeCards/breaks", {
         method: "POST",
         body: JSON.stringify({
-          breakStartTime: breakStartTime,
+          breakEndTime: breakEndTime,
+          breakTimeTotal: breakTimeTotal,
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -232,7 +227,6 @@ startPauseButton.addEventListener("click", function () {
       })
         .then((response) => response.json())
         .then((json) => console.log(json));
-*/
 
       // пересчитать прогноз конца дня
       // поменять значение прогноза в ячейке
