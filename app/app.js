@@ -44,6 +44,28 @@ function calcElapsedTime(startTime, endTime) {
   return hours === 0 ? minutes + " м " : hours + " ч " + minutes + " м ";
 }
 
+function addTimeToForecast(forcastTime, summandTime) {
+  const forcastTimeParsedArr = forcastTime.split(":");
+  const summandHoursMatch = summandTime.match(/\d+ч/);
+  const summandHours =
+    summandHoursMatch === null ? 0 : parseInt(summandHoursMatch, 10);
+  const summandMinutsMatch = summandTime.match(/\d+м/);
+  const summandMinuts =
+    summandMinutsMatch === null ? 0 : parseInt(summandMinutsMatch, 10);
+
+  let hours = parseInt(forcastTimeParsedArr[0], 10) + summandHours;
+  let minutes = parseInt(forcastTimeParsedArr[1], 10) + summandMinuts;
+
+  if (minutes >= 60) {
+    minutes -= 60;
+    hours++;
+  }
+  if (minutes < 10) {
+    minutes = minutes.toString().padStart(2, "0");
+  }
+  return `${hours}:${minutes}`;
+}
+
 fetch("/app/state")
   .then((response) => {
     return response.json();
@@ -215,7 +237,7 @@ startPauseButton.addEventListener("click", function () {
         breakTimeTotal;
       let dayEndTimeForcast = timeForcastField.textContent;
 
-      timeForcastField.textContent = sumTime(dayEndTimeForcast, breakTimeTotal);
+      //  timeForcastField.textContent = addTimeToForecast(dayEndTimeForcast, breakTimeTotal);
 
       // пересчитать прогноз конца дня
 
