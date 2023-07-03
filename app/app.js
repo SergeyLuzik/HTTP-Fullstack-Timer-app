@@ -112,17 +112,30 @@ fetch("/app/timeCardTemplate.html")
               ".time-card:last-child tbody",
             ); // todo используется многократно
             for (let i = 0; i < timeCard.breaks.length; i++) {
+              // TODO исправить undefined при неполных перерывах
               if (i % 2 === 0) {
                 breaksTable.append(document.createElement("tr"));
               }
               const breakStartEndTime = document.createElement("td");
-              breakStartEndTime.textContent = `${timeCard.breaks[i].breakStartTime} - ${timeCard.breaks[i].breakEndTime}`;
-              const totalBreakTime = document.createElement("td");
-              totalBreakTime.textContent = timeCard.breaks[i].breakTimeTotal;
+              breakStartEndTime.textContent = `${
+                timeCard.breaks[i].breakStartTime
+              }${
+                timeCard.breaks[i].breakEndTime === undefined
+                  ? ""
+                  : ` - ${timeCard.breaks[i].breakEndTime}`
+              }`;
 
-              breaksTable
-                .querySelector("tr:last-child")
-                .append(breakStartEndTime, totalBreakTime);
+              if (timeCard.breaks[i].breakTimeTotal === undefined) {
+                breaksTable
+                  .querySelector("tr:last-child")
+                  .append(breakStartEndTime);
+              } else {
+                const totalBreakTime = document.createElement("td");
+                totalBreakTime.textContent = timeCard.breaks[i].breakTimeTotal;
+                breaksTable
+                  .querySelector("tr:last-child")
+                  .append(breakStartEndTime, totalBreakTime);
+              }
             }
           }
         }

@@ -1,1 +1,50 @@
-{"state":{"timeBalance":"+14 ч 15 м","startPauseButtonClass":"btn_start","timeForcast":""},"timeCards":[{"monthDay":"11 АВГ","weekDay":"ПН","dayStartTime":"7:30","dayEndTime":"16:00","dayWorkTimeTotal":"9 ч 00 м","breaks":[{"breakStartTime":"7:45","breakEndTime":"8:00","breakTimeTotal":"15 м"},{"breakStartTime":"11:45","breakEndTime":"12:00","breakTimeTotal":"15 м"},{"breakStartTime":"13:45","breakEndTime":"15:00","breakTimeTotal":"1 ч 15 м"},{"breakStartTime":"15:05","breakEndTime":"15:20","breakTimeTotal":"15 м"}]},{"monthDay":"11 АВГ","weekDay":"ПН","dayStartTime":"7:30","dayEndTime":"16:00","dayWorkTimeTotal":"8 ч 00 м","breaks":[{"breakStartTime":"7:45","breakEndTime":"8:00","breakTimeTotal":"15 м"},{"breakStartTime":"11:45","breakEndTime":"12:00","breakTimeTotal":"15 м"},{"breakStartTime":"13:45","breakEndTime":"15:00","breakTimeTotal":"1 ч 15 м"},{"breakStartTime":"8:05"}]},{"monthDay":"30 ИЮН","weekDay":"ПТ","dayStartTime":"14:53","breaks":[{"breakStartTime":"14:53","breakEndTime":"14:53","breakTimeTotal":"0 м "}]}]}
+{
+  "state": {
+    "timeBalance": "+14 ч 15 м",
+    "startPauseButtonClass": "btn_start",
+    "timeForcast": ""
+  },
+  "timeCards": [
+    {
+      "monthDay": "11 АВГ",
+      "weekDay": "ПН",
+      "dayStartTime": "7:30",
+      "dayEndTime": "16:00",
+      "dayWorkTimeTotal": "9 ч 00 м",
+      "breaks": [
+        {
+          "breakStartTime": "7:15",
+          "breakEndTime": "8:00",
+          "breakTimeTotal": "15 м"
+        },
+        {
+          "breakStartTime": "11:45",
+          "breakEndTime": "12:00",
+          "breakTimeTotal": "15 м"
+        },
+        {
+          "breakStartTime": "13:45",
+          "breakEndTime": "15:00",
+          "breakTimeTotal": "1 ч 15 м"
+        },
+        {
+          "breakStartTime": "15:05",
+          "breakEndTime": "15:20",
+          "breakTimeTotal": "15 м"
+        }
+      ]
+    },
+    {
+      "monthDay": "11 АВГ",
+      "weekDay": "ПН",
+      "dayStartTime": "7:30",
+      "dayEndTime": "16:00",
+      "dayWorkTimeTotal": "8 ч 00 м",
+      "breaks": [
+        {
+          "breakStartTime": "7:45"
+        }
+      ]
+    }
+  ]
+}
