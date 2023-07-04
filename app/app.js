@@ -240,10 +240,12 @@ startPauseButton.addEventListener("click", function () {
       const breakEndTime = `${currentDate.getHours()}:${minutes}`;
 
       const breaksTable = document.querySelector(".time-card:last-child tbody");
-      let lastBreak = breaksTable.querySelector("tr:last-child td");
+      let lastBreak = breaksTable.querySelector(
+        "tr:last-child > td:last-child",
+      );
       const dayStartTime = lastBreak.textContent;
 
-      lastBreak.textContent += ` - ${breakEndTime}`; // добавить время конца перерыва
+      lastBreak.textContent += ` - ${breakEndTime}`; // TODO исправить добавление 2го перерыва в tr
       const breakTimeTotal = calcElapsedTime(dayStartTime, breakEndTime);
       // добавить продолжительность перерыва
       breaksTable.querySelector("tr:last-child").insertCell().textContent =
