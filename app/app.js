@@ -95,7 +95,9 @@ fetch("/app/timeCardTemplate.html")
 
     fetch("/app/timeCards")
       .then((response) => response.json())
-      .then((timeCards) => {
+      .then((data) => {
+        const timeCards = data.timeCards;
+
         for (const timeCard of timeCards) {
           // let timeCardsList = document.querySelector(".time-cards-list");
           let filledTimeCard = cardTemplate.replace(

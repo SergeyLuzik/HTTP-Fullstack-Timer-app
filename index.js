@@ -2,6 +2,24 @@ const { log } = require("console");
 const http = require("http");
 const fs = require("fs").promises;
 
+function getCurrentRuTime() {
+  return new Date().toLocaleTimeString("ru-RU", {
+    timeZone: "Europe/Moscow",
+    hour12: false,
+  });
+}
+
+function logFileChange(reqType, fileName, massage, data) {
+  console.log(" ");
+  console.log(getCurrentRuTime());
+  console.log("-------------------------");
+  console.log(`---- ${reqType} запрос`);
+  console.log(`---- ${massage} ${fileName}`);
+  console.log(data);
+  console.log("-------------------------");
+  console.log(" ");
+}
+
 //create a server object:
 http
   .createServer(function (req, res) {
@@ -13,7 +31,7 @@ http
       switch (req.url) {
         case "/":
           try {
-            fs.readFile(__dirname + "/app/app.html").then((contents) => {
+            fs.readFile("./app/app.html").then((contents) => {
               res.writeHead(200, { "Content-Type": "text/html" });
               res.write(contents);
               res.end();
@@ -28,7 +46,7 @@ http
 
         case "/app/styles.css":
           try {
-            fs.readFile(__dirname + "/app/styles.css").then((contents) => {
+            fs.readFile("./app/styles.css").then((contents) => {
               res.writeHead(200, { "Content-Type": "text/css" });
               res.write(contents);
               res.end();
@@ -43,7 +61,7 @@ http
 
         case "/app/app.js":
           try {
-            fs.readFile(__dirname + "/app/app.js").then((contents) => {
+            fs.readFile("./app/app.js").then((contents) => {
               res.write(contents);
               res.end();
             });
@@ -57,7 +75,7 @@ http
 
         case "/app/svg/play.svg":
           try {
-            fs.readFile(__dirname + "/app/svg/play.svg").then((contents) => {
+            fs.readFile("./app/svg/play.svg").then((contents) => {
               res.write(contents);
               res.end();
             });
@@ -71,7 +89,7 @@ http
 
         case "/app/svg/pause.svg":
           try {
-            fs.readFile(__dirname + "/app/svg/pause.svg").then((contents) => {
+            fs.readFile("./app/svg/pause.svg").then((contents) => {
               res.write(contents);
               res.end();
             });
@@ -85,24 +103,8 @@ http
 
         case "/favicon.ico":
           try {
-            fs.readFile(__dirname + "/app/favicon.ico").then((contents) => {
+            fs.readFile("./app/favicon.ico").then((contents) => {
               res.write(contents);
-              res.end();
-            });
-          } catch (err) {
-            console.log("Ошибка!" + err);
-            res.writeHead(500, { "Content-Type": "text/plain" });
-            res.write("Ошибка!" + err);
-            res.end();
-          }
-          break;
-
-        case "/app/state":
-          try {
-            fs.readFile(__dirname + "/db.json").then((contents) => {
-              const dbData = JSON.parse(contents);
-              res.writeHead(200, { "Content-Type": "application/json" });
-              res.write(JSON.stringify(dbData.state));
               res.end();
             });
           } catch (err) {
@@ -115,13 +117,11 @@ http
 
         case "/app/timeCardTemplate.html":
           try {
-            fs.readFile(__dirname + "/app/timeCardTemplate.html").then(
-              (contents) => {
-                res.writeHead(200, { "Content-Type": "text/html" });
-                res.write(contents);
-                res.end();
-              },
-            );
+            fs.readFile("./app/timeCardTemplate.html").then((contents) => {
+              res.writeHead(200, { "Content-Type": "text/html" });
+              res.write(contents);
+              res.end();
+            });
           } catch (err) {
             console.log("Ошибка!" + err);
             res.writeHead(500, { "Content-Type": "text/plain" });
@@ -132,13 +132,35 @@ http
 
         case "/app/emptyTimeCard.html":
           try {
-            fs.readFile(__dirname + "/app/emptyTimeCard.html").then(
-              (contents) => {
-                res.writeHead(200, { "Content-Type": "text/html" });
-                res.write(contents);
-                res.end();
-              },
-            );
+            fs.readFile("./app/emptyTimeCard.html").then((contents) => {
+              res.writeHead(200, { "Content-Type": "text/html" });
+              res.write(contents);
+              res.end();
+            });
+          } catch (err) {
+            console.log("Ошибка!" + err);
+            res.writeHead(500, { "Content-Type": "text/plain" });
+            res.write("Ошибка!" + err);
+            res.end();
+          }
+          break;
+
+        // ---------- ОБРАБОТЧИКИ
+        case "/app/state":
+          try {
+            fs.readFile("./state.json").then((contents) => {
+              logFileChange(
+                "GET",
+                "state.json",
+                "СОДЕРЖИМОЕ ФАЙЛА",
+                contents.toString(),
+              );
+              //const stateData = JSON.parse(contents);
+
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.write(contents /*JSON.stringify(stateData)*/);
+              res.end();
+            });
           } catch (err) {
             console.log("Ошибка!" + err);
             res.writeHead(500, { "Content-Type": "text/plain" });
@@ -149,10 +171,16 @@ http
 
         case "/app/timeCards":
           try {
-            fs.readFile(__dirname + "/db.json").then((contents) => {
-              const dbData = JSON.parse(contents);
+            fs.readFile("./timeCards.json").then((contents) => {
+              logFileChange(
+                "GET",
+                "timeCards.json",
+                "СОДЕРЖИМОЕ ФАЙЛА",
+                contents.toString(),
+              );
+              //const data = JSON.parse(contents);
               res.writeHead(200, { "Content-Type": "application/json" });
-              res.write(JSON.stringify(dbData.timeCards));
+              res.write(contents /*JSON.stringify(data.timeCards)*/);
               res.end();
             });
           } catch (err) {
@@ -171,14 +199,27 @@ http
             .on("data", (chunk) => (body += chunk.toString()))
             .on("end", () => {
               // const data = ;
-              fs.readFile(__dirname + "/db.json").then((contents) => {
-                const dbData = JSON.parse(contents);
-                dbData.timeCards.push(JSON.parse(body));
-                //console.log(dbData);
-                fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
+              fs.readFile("./timeCards.json").then((contents) => {
+                logFileChange(
+                  "POST",
+                  "timeCards.json",
+                  "СОДЕРЖИМОЕ ФАЙЛА",
+                  contents.toString(),
+                );
+
+                const data = JSON.parse(contents);
+                data.timeCards.push(JSON.parse(body));
+                logFileChange(
+                  "POST",
+                  "timeCards.json",
+                  "ЗАПИСЬ В ФАЙЛ",
+                  JSON.stringify(data),
+                );
+
+                fs.writeFile("./timeCards.json", JSON.stringify(data));
 
                 res.writeHead(200, { "Content-Type": "application/json" });
-                res.write(JSON.stringify(dbData));
+                res.write(JSON.stringify(data));
                 res.end();
               });
             });
@@ -194,11 +235,16 @@ http
           req
             .on("data", (chunk) => (body += chunk.toString()))
             .on("end", () => {
-              fs.readFile(__dirname + "/db.json").then((contents) => {
-                const dbData = JSON.parse(contents);
+              fs.readFile("./timeCards.json").then((contents) => {
+                logFileChange(
+                  "POST",
+                  "timeCards.json",
+                  "СОДЕРЖИМОЕ ФАЙЛА",
+                  contents.toString(),
+                );
+                const data = JSON.parse(contents);
 
-                let lastTimeCard =
-                  dbData.timeCards[dbData.timeCards.length - 1];
+                let lastTimeCard = data.timeCards[data.timeCards.length - 1];
                 console.log(JSON.parse(body));
                 console.log("перед расчетом перерыва ");
                 console.log(lastTimeCard);
@@ -222,10 +268,16 @@ http
                 console.log(lastTimeCard);
                 console.log("массив перерывов ");
                 console.log(lastTimeCard.breaks);
-                fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
+                logFileChange(
+                  "POST",
+                  "timeCards.json",
+                  "ЗАПИСЬ В ФАЙЛ",
+                  JSON.stringify(data),
+                );
+                fs.writeFile("./timeCards.json", JSON.stringify(data));
 
                 res.writeHead(200, { "Content-Type": "application/json" });
-                res.write(JSON.stringify(dbData));
+                res.write(JSON.stringify(data));
                 res.end();
               });
             });
@@ -244,18 +296,30 @@ http
             .on("data", (chunk) => (body += chunk.toString()))
             .on("end", () => {
               try {
-                fs.readFile(__dirname + "/db.json").then((contents) => {
-                  const dbData = JSON.parse(contents);
+                fs.readFile("./state.json").then((contents) => {
+                  logFileChange(
+                    "PATCH",
+                    "state.json",
+                    "СОДЕРЖИМОЕ ФАЙЛА",
+                    contents.toString(),
+                  );
+                  const stateData = JSON.parse(contents);
                   const bodyObj = JSON.parse(body);
 
                   for (const key in bodyObj) {
-                    dbData.state[key] = bodyObj[key];
+                    stateData[key] = bodyObj[key];
                   }
 
-                  fs.writeFile(__dirname + "/db.json", JSON.stringify(dbData));
+                  logFileChange(
+                    "PATCH",
+                    "state.json",
+                    "ЗАПИСЬ В ФАЙЛ",
+                    JSON.stringify(stateData),
+                  );
+                  fs.writeFile("./state.json", JSON.stringify(stateData));
 
                   res.writeHead(200, { "Content-Type": "application/json" });
-                  res.write(JSON.stringify(dbData.state));
+                  res.write(JSON.stringify(stateData));
                   res.end();
                 });
               } catch (err) {
