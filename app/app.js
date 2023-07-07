@@ -281,6 +281,7 @@ startPauseButton.addEventListener("click", function () {
         method: "PATCH",
         body: JSON.stringify({
           timeForcast: newDayEndTimeForcast,
+          startPauseButtonClass: "btn_pause",
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8",
