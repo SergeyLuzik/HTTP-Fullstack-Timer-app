@@ -1,4 +1,4 @@
-// ---- Загружаем текущее состояние и последние записи (todo реализовать из db.json достаем посление 10 записей или меньше)
+пше // ---- Загружаем текущее состояние и последние записи (todo реализовать из db.json достаем посление 10 записей или меньше)
 
 let timeCardsList = document.querySelector(".time-cards-list");
 
@@ -237,7 +237,7 @@ startPauseButton.addEventListener("click", function () {
       //  КОНЕЦ ПЕРЕРЫВА:
       startPauseButton.classList.replace("btn_start", "btn_pause");
 
-      const currentDate = new Date();
+      const currentDate = new Date(); // todo завести функцию setTime()
       const minutes = formatMinutes(currentDate.getMinutes());
       const breakEndTime = `${currentDate.getHours()}:${minutes}`;
 
@@ -338,11 +338,21 @@ startPauseButton.addEventListener("click", function () {
 
 stopButton.addEventListener("click", function () {
   //КОНЕЦ ДНЯ:
-  // удалить текст в окне прогноза окончания дня
-  // поставить время окончания дня
+  let timeForcastField = document.querySelector(
+    ".control-panel__time-forcast-value",
+  );
+
+  const timeForcast = timeForcastField.textContent; // удалить текст в окне прогноза окончания дня
+
+  timeForcastField.textContent = "";
+
+  const currentDate = new Date();
+  const minutes = formatMinutes(currentDate.getMinutes());
+  const dayEndTime = `${currentDate.getHours()}:${minutes}`;
+  document.querySelector(".day-timeline__end-time-value").textContent =
+    dayEndTime; // поставить время окончания дня
   // расчитать отработанное время за день (в прогнозе окончания дня стоит время 8ч, от него отнимать время конца дня чтобы расчитать сколько часов отработал)
   // обновить баланс времени
-  // убрать класс current-day с карточки дня?
 });
 
 // https://thecode.media/xhr/
