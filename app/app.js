@@ -1,4 +1,4 @@
-пше // ---- Загружаем текущее состояние и последние записи (todo реализовать из db.json достаем посление 10 записей или меньше)
+// ---- Загружаем текущее состояние и последние записи (todo реализовать из db.json достаем посление 10 записей или меньше)
 
 let timeCardsList = document.querySelector(".time-cards-list");
 
@@ -64,6 +64,36 @@ function addTimeToForecast(forcastTime, summandTime) {
     minutes = minutes.toString().padStart(2, "0");
   }
   return `${hours}:${minutes}`;
+}
+
+function convertToDateObj(timeStr) {
+  const timeStrArr = timeStr.split(":");
+  let dateObj = new Date();
+  dateObj.setHours(timeStrArr[0]);
+  dateObj.setMinutes(timeStrArr[1]);
+  return dateObj;
+}
+
+function toHumanReadFormat(milliseconds, mode) {
+  const parsedArr = [
+    ...milliseconds.toString().matchAll(/(?<sign>-)?(?<time>\d+)/g),
+  ];
+
+  const hours = Math.trunc(parsedArr[0].groups.time / 3600000);
+
+  const minutes = Math.trunc(
+    (parsedArr[0].groups.time - 3600000 * hours) / 60000,
+  );
+  const convertedTime =
+    hours === 0 ? minutes + " м " : hours + " ч " + minutes + " м ";
+
+  if (mode === "WithSign") {
+    const sign = parsedArr[0].groups.sign === undefined ? "+" : "-";
+
+    return sign + convertedTime;
+  }
+
+  return convertedTime;
 }
 
 fetch("/app/state")
@@ -349,9 +379,19 @@ stopButton.addEventListener("click", function () {
   const currentDate = new Date();
   const minutes = formatMinutes(currentDate.getMinutes());
   const dayEndTime = `${currentDate.getHours()}:${minutes}`;
-  document.querySelector(".day-timeline__end-time-value").textContent =
-    dayEndTime; // поставить время окончания дня
-  // расчитать отработанное время за день (в прогнозе окончания дня стоит время 8ч, от него отнимать время конца дня чтобы расчитать сколько часов отработал)
+  document.querySelector(
+    ".time-card:last-child .day-timeline__end-time-value",
+  ).textContent = dayEndTime; // поставить время окончания дня
+  // расчитать отработанное время за день
+  //(в прогнозе окончания дня стоит время 8ч, от него отнимать время конца дня чтобы расчитать сколько часов отработал)
+  const totalDayWorkTime = toHumanReadFormat(
+    28800000 + (currentDate - convertToDateObj(timeForcast)),
+  );
+
+  document.querySelector(
+    ".time-card:last-child .day-timeline__work-time-total-value",
+  ).textContent = totalDayWorkTime;
+
   // обновить баланс времени
 });
 
