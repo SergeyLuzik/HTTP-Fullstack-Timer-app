@@ -1,1 +1,21 @@
-{"timeCards":[{"monthDay":"17 ИЮЛ","weekDay":"ПН","dayStartTime":"8:53","breaks":[{"breakStartTime":"14:44","breakEndTime":"14:55","breakTimeTotal":"11 м "},{"breakStartTime":"14:55","breakEndTime":"14:57","breakTimeTotal":"2 м "}],"dayEndTime":"14:57","dayWorkTimeTotal":"5 ч 51 м "}]}
+{
+  "timeCards": [
+    {
+      "monthDay": "17 ИЮЛ",
+      "weekDay": "ПН",
+      "dayStartTime": "7:53",
+      "breaks": [
+        {
+          "breakStartTime": "8:10",
+          "breakEndTime": "8:16",
+          "breakTimeTotal": "5 м "
+        },
+        {
+          "breakStartTime": "12:42",
+          "breakEndTime": "12:52",
+          "breakTimeTotal": "9 м "
+        }
+      ]
+    }
+  ]
+}

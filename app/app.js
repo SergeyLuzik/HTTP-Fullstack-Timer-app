@@ -159,7 +159,7 @@ fetch("/app/timeCardTemplate.html")
               ".time-card:last-child tbody",
             ); // todo используется многократно
             for (let i = 0; i < timeCard.breaks.length; i++) {
-              // TODO исправить undefined при неполных перерывах
+             
               if (i % 2 === 0) {
                 breaksTable.append(document.createElement("tr"));
               }
@@ -383,6 +383,7 @@ startPauseButton.addEventListener("click", function () {
 
 stopButton.addEventListener("click", function () {
   //КОНЕЦ ДНЯ:
+  startPauseButton.classList.replace("btn_pause", "btn_start");
   let timeForcastField = document.querySelector(
     ".control-panel__time-forcast-value",
   );
@@ -438,6 +439,7 @@ stopButton.addEventListener("click", function () {
     method: "PATCH",
     body: JSON.stringify({
       timeForcast: "",
+      startPauseButtonClass: "btn_start",
       timeBalance: newTimeBalance,
     }),
     headers: {
