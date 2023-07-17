@@ -193,6 +193,7 @@ http
       }
     } else if (req.method === "POST") {
       if (req.url === "/app/timeCards") {
+        // todo добалвение дааных о конце дня (либо два пути timeCards/newDay, timeCards/endDay, либо в обраотке timeCards - если передают время начала дня, то в конец массива, если передают конец, то в timeCards[timeCards.length - 1] )
         try {
           let body = "";
           req
@@ -208,7 +209,20 @@ http
                 );
 
                 const data = JSON.parse(contents);
-                data.timeCards.push(JSON.parse(body));
+
+                if (body.includes("dayEndTime")) {
+                  console.log(body.includes("dayEndTime"));
+                  console.log(body);
+
+                  Object.assign(
+                    data.timeCards[data.timeCards.length - 1],
+                    JSON.parse(body),
+                  );
+                  console.log(data.timeCards[0]);
+                } else {
+                  data.timeCards.push(JSON.parse(body));
+                }
+
                 logFileChange(
                   "POST",
                   "timeCards.json",

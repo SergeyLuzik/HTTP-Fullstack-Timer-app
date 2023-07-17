@@ -96,6 +96,21 @@ function toHumanReadFormat(milliseconds, mode) {
   return convertedTime;
 }
 
+function toMilliseconds(humanReadFormat) {
+  let timeValues = humanReadFormat.toString().match(/\d+/g);
+
+  let milliseconds =
+    timeValues.length === 1
+      ? 60000 * timeValues[0]
+      : 3600000 * timeValues[0] + 60000 * timeValues[1];
+
+  milliseconds = humanReadFormat.includes("-")
+    ? milliseconds * -1
+    : milliseconds;
+
+  return milliseconds;
+}
+
 fetch("/app/state")
   .then((response) => {
     return response.json();
@@ -372,9 +387,9 @@ stopButton.addEventListener("click", function () {
     ".control-panel__time-forcast-value",
   );
 
-  const timeForcast = timeForcastField.textContent; // удалить текст в окне прогноза окончания дня
+  const timeForcast = timeForcastField.textContent;
 
-  timeForcastField.textContent = "";
+  timeForcastField.textContent = ""; // удалить текст в окне прогноза окончания дня
 
   const currentDate = new Date();
   const minutes = formatMinutes(currentDate.getMinutes());
@@ -384,15 +399,53 @@ stopButton.addEventListener("click", function () {
   ).textContent = dayEndTime; // поставить время окончания дня
   // расчитать отработанное время за день
   //(в прогнозе окончания дня стоит время 8ч, от него отнимать время конца дня чтобы расчитать сколько часов отработал)
-  const totalDayWorkTime = toHumanReadFormat(
-    28800000 + (currentDate - convertToDateObj(timeForcast)),
+  const eightHoursInMillisec = 28800000;
+  const endDayTimeForcastTimeDifference =
+    currentDate - convertToDateObj(timeForcast);
+  const dayWorkTimeTotal = toHumanReadFormat(
+    eightHoursInMillisec + endDayTimeForcastTimeDifference,
   );
+  // todo добавить обработку выходных
 
   document.querySelector(
     ".time-card:last-child .day-timeline__work-time-total-value",
-  ).textContent = totalDayWorkTime;
+  ).textContent = dayWorkTimeTotal;
 
   // обновить баланс времени
+  const timeBalance = document.querySelector(".time-balance__value");
+  let timeBalanceInMillisec = toMilliseconds(timeBalance.textContent); // - получить баланс   // - перевести в миллисекунды
+  timeBalanceInMillisec += endDayTimeForcastTimeDifference;
+
+  const newTimeBalance = toHumanReadFormat(timeBalanceInMillisec, "WithSign");
+
+  timeBalance.textContent = newTimeBalance;
+  // прибавить отработанное время минус 8ч
+
+  fetch("/app/timeCards", {
+    method: "POST",
+    body: JSON.stringify({
+      dayEndTime: dayEndTime,
+      dayWorkTimeTotal: dayWorkTimeTotal,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
+
+  fetch("/app/state", {
+    method: "PATCH",
+    body: JSON.stringify({
+      timeForcast: "",
+      timeBalance: newTimeBalance,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
 });
 
 // https://thecode.media/xhr/
