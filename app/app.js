@@ -26,6 +26,91 @@ const monthsList = {
   10: "НОЯ",
   11: "ДЕК",
 };
+
+function formatMinutes(minutes) {
+  return minutes.toString().padStart(2, "0");
+}
+
+function calcElapsedTime(startTime, endTime) {
+  const startTimeArr = startTime.split(":");
+  const endTimeArr = endTime.split(":");
+  let hours = endTimeArr[0] - startTimeArr[0];
+  let minutes = endTimeArr[1] - startTimeArr[1];
+
+  if (minutes < 0) {
+    minutes = 60 + minutes;
+    hours--;
+  }
+  return hours === 0 ? minutes + " м " : hours + " ч " + minutes + " м ";
+}
+
+function addTimeToForecast(forcastTime, summandTime) {
+  const forcastTimeParsedArr = forcastTime.split(":");
+  const summandHoursMatch = summandTime.match(/\d+ ч/);
+  const summandHours =
+    summandHoursMatch === null ? 0 : parseInt(summandHoursMatch, 10);
+  const summandMinutsMatch = summandTime.match(/\d+ м/);
+  const summandMinuts =
+    summandMinutsMatch === null ? 0 : parseInt(summandMinutsMatch, 10);
+
+  let hours = parseInt(forcastTimeParsedArr[0], 10) + summandHours;
+  let minutes = parseInt(forcastTimeParsedArr[1], 10) + summandMinuts;
+
+  if (minutes >= 60) {
+    minutes -= 60;
+    hours++;
+  }
+  if (minutes < 10) {
+    minutes = minutes.toString().padStart(2, "0");
+  }
+  return `${hours}:${minutes}`;
+}
+
+function convertToDateObj(timeStr) {
+  const timeStrArr = timeStr.split(":");
+  let dateObj = new Date();
+  dateObj.setHours(timeStrArr[0]);
+  dateObj.setMinutes(timeStrArr[1]);
+  return dateObj;
+}
+
+function toHumanReadFormat(milliseconds, mode) {
+  const parsedArr = [
+    ...milliseconds.toString().matchAll(/(?<sign>-)?(?<time>\d+)/g),
+  ];
+
+  const hours = Math.trunc(parsedArr[0].groups.time / 3600000);
+
+  const minutes = Math.trunc(
+    (parsedArr[0].groups.time - 3600000 * hours) / 60000,
+  );
+  const convertedTime =
+    hours === 0 ? minutes + " м " : hours + " ч " + minutes + " м ";
+
+  if (mode === "WithSign") {
+    const sign = parsedArr[0].groups.sign === undefined ? "+" : "-";
+
+    return sign + convertedTime;
+  }
+
+  return convertedTime;
+}
+
+function toMilliseconds(humanReadFormat) {
+  let timeValues = humanReadFormat.toString().match(/\d+/g);
+
+  let milliseconds =
+    timeValues.length === 1
+      ? 60000 * timeValues[0]
+      : 3600000 * timeValues[0] + 60000 * timeValues[1];
+
+  milliseconds = humanReadFormat.includes("-")
+    ? milliseconds * -1
+    : milliseconds;
+
+  return milliseconds;
+}
+
 fetch("/app/state")
   .then((response) => {
     return response.json();
@@ -55,7 +140,9 @@ fetch("/app/timeCardTemplate.html")
 
     fetch("/app/timeCards")
       .then((response) => response.json())
-      .then((timeCards) => {
+      .then((data) => {
+        const timeCards = data.timeCards;
+
         for (const timeCard of timeCards) {
           // let timeCardsList = document.querySelector(".time-cards-list");
           let filledTimeCard = cardTemplate.replace(
@@ -70,19 +157,32 @@ fetch("/app/timeCardTemplate.html")
             // todo спросить у GPT эффективный алгоритм вставки перерывов
             let breaksTable = document.querySelector(
               ".time-card:last-child tbody",
-            );
+            ); // todo используется многократно
             for (let i = 0; i < timeCard.breaks.length; i++) {
+             
               if (i % 2 === 0) {
                 breaksTable.append(document.createElement("tr"));
               }
               const breakStartEndTime = document.createElement("td");
-              breakStartEndTime.textContent = `${timeCard.breaks[i].breakStartTime} - ${timeCard.breaks[i].breakEndTime}`;
-              const totalBreakTime = document.createElement("td");
-              totalBreakTime.textContent = timeCard.breaks[i].breakTimeTotal;
+              breakStartEndTime.textContent = `${
+                timeCard.breaks[i].breakStartTime
+              }${
+                timeCard.breaks[i].breakEndTime === undefined
+                  ? ""
+                  : ` - ${timeCard.breaks[i].breakEndTime}`
+              }`;
 
-              breaksTable
-                .querySelector("tr:last-child")
-                .append(breakStartEndTime, totalBreakTime);
+              if (timeCard.breaks[i].breakTimeTotal === undefined) {
+                breaksTable
+                  .querySelector("tr:last-child")
+                  .append(breakStartEndTime);
+              } else {
+                const totalBreakTime = document.createElement("td");
+                totalBreakTime.textContent = timeCard.breaks[i].breakTimeTotal;
+                breaksTable
+                  .querySelector("tr:last-child")
+                  .append(breakStartEndTime, totalBreakTime);
+              }
             }
           }
         }
@@ -94,7 +194,7 @@ fetch("/app/timeCardTemplate.html")
   .catch((err) => {
     console.log("Запрос не выполнен!" + err);
   });
-
+// ---- ОБРАБОТЧИКИ СОБЫТИЙ
 const startPauseButton = document.querySelector(
   ".control-panel__btn-start-pause",
 );
@@ -129,7 +229,7 @@ startPauseButton.addEventListener("click", function () {
           }`;
           const weekDay = weekDays[currentDate.getDay()];
           //const hours = currentDate.getHours();
-          const minutes = currentDate.getMinutes().toString().padStart(2, "0"); // getMinutes выдает не 03 минуты а 3, получается 10:2
+          const minutes = formatMinutes(currentDate.getMinutes());
           const dayStartTime = `${currentDate.getHours()}:${minutes}`;
           const timeForcast = `${currentDate.getHours() + 8}:${minutes}`;
 
@@ -180,30 +280,174 @@ startPauseButton.addEventListener("click", function () {
         });
     } else {
       //  КОНЕЦ ПЕРЕРЫВА:
-      // добавить время конца перерыва
-      // расчитать продолжительность прерыва
+      startPauseButton.classList.replace("btn_start", "btn_pause");
+
+      const currentDate = new Date(); // todo завести функцию setTime()
+      const minutes = formatMinutes(currentDate.getMinutes());
+      const breakEndTime = `${currentDate.getHours()}:${minutes}`;
+
+      const breaksTable = document.querySelector(".time-card:last-child tbody");
+      let lastBreak = breaksTable.querySelector(
+        "tr:last-child > td:last-child",
+      );
+      const dayStartTime = lastBreak.textContent;
+
+      lastBreak.textContent += ` - ${breakEndTime}`; // TODO исправить добавление 2го перерыва в tr
+      const breakTimeTotal = calcElapsedTime(dayStartTime, breakEndTime);
       // добавить продолжительность перерыва
+      breaksTable.querySelector("tr:last-child").insertCell().textContent =
+        breakTimeTotal;
+      const dayEndTimeForcast = timeForcastField.textContent;
+
+      const newDayEndTimeForcast = addTimeToForecast(
+        dayEndTimeForcast,
+        breakTimeTotal,
+      );
+
+      timeForcastField.textContent = newDayEndTimeForcast;
+
       // пересчитать прогноз конца дня
+
+      // отправка на сервер
+      fetch("/app/timeCards/breaks", {
+        method: "POST",
+        body: JSON.stringify({
+          breakEndTime: breakEndTime,
+          breakTimeTotal: breakTimeTotal,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+
+      fetch("/app/state", {
+        method: "PATCH",
+        body: JSON.stringify({
+          timeForcast: newDayEndTimeForcast,
+          startPauseButtonClass: "btn_pause",
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => console.log(json)); //TODO отправить статус кнопки
+
       // поменять значение прогноза в ячейке
+      // отправить  все на сервер
     }
   } else {
     // НАЖАТИЕ НА ПАУЗУ -- НАЧАЛО ПЕРЕРЫВА
-    startPauseButton.classList.replace("btn_pause", "btn_start"); // меняем класс btn_pause на btn-start
-    // куда ставить данные? в левый или правый столбец таблицы, какой заполнен
-    // залетаем в псоледний tr (т.к. следующий создаем только когда заполнен предыдущий)
-    // если в tr уже есть 2 td, то один перерыв уже прошел (есть время перерыва)
-    //
-    // ставим начало паузы
+    startPauseButton.classList.replace("btn_pause", "btn_start");
+    const breaksTable = document.querySelector(".time-card:last-child tbody");
+    const currentDate = new Date();
+    const minutes = formatMinutes(currentDate.getMinutes());
+    const breakStartTime = `${currentDate.getHours()}:${minutes}`;
+    if (
+      breaksTable.rows.length === 0 ||
+      breaksTable.querySelector("tr:last-child").cells.length > 2
+    ) {
+      breaksTable.insertRow().insertCell().textContent = breakStartTime;
+    } else {
+      breaksTable.querySelector("tr:last-child").insertCell().textContent =
+        breakStartTime;
+    }
+    // отправка на сервер
+    fetch("/app/timeCards/breaks", {
+      method: "POST",
+      body: JSON.stringify({
+        breakStartTime: breakStartTime,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => console.log(json));
+
+    fetch("/app/state", {
+      method: "PATCH",
+      body: JSON.stringify({
+        startPauseButtonClass: "btn_start",
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => console.log(json));
   }
 });
 
 stopButton.addEventListener("click", function () {
   //КОНЕЦ ДНЯ:
-  // удалить текст в окне прогноза окончания дня
-  // поставить время окончания дня
+  startPauseButton.classList.replace("btn_pause", "btn_start");
+  let timeForcastField = document.querySelector(
+    ".control-panel__time-forcast-value",
+  );
+
+  const timeForcast = timeForcastField.textContent;
+
+  timeForcastField.textContent = ""; // удалить текст в окне прогноза окончания дня
+
+  const currentDate = new Date();
+  const minutes = formatMinutes(currentDate.getMinutes());
+  const dayEndTime = `${currentDate.getHours()}:${minutes}`;
+  document.querySelector(
+    ".time-card:last-child .day-timeline__end-time-value",
+  ).textContent = dayEndTime; // поставить время окончания дня
   // расчитать отработанное время за день
+  //(в прогнозе окончания дня стоит время 8ч, от него отнимать время конца дня чтобы расчитать сколько часов отработал)
+  const eightHoursInMillisec = 28800000;
+  const endDayTimeForcastTimeDifference =
+    currentDate - convertToDateObj(timeForcast);
+  const dayWorkTimeTotal = toHumanReadFormat(
+    eightHoursInMillisec + endDayTimeForcastTimeDifference,
+  );
+  // todo добавить обработку выходных
+
+  document.querySelector(
+    ".time-card:last-child .day-timeline__work-time-total-value",
+  ).textContent = dayWorkTimeTotal;
+
   // обновить баланс времени
-  // убрать класс current-day с карточки дня
+  const timeBalance = document.querySelector(".time-balance__value");
+  let timeBalanceInMillisec = toMilliseconds(timeBalance.textContent); // - получить баланс   // - перевести в миллисекунды
+  timeBalanceInMillisec += endDayTimeForcastTimeDifference;
+
+  const newTimeBalance = toHumanReadFormat(timeBalanceInMillisec, "WithSign");
+
+  timeBalance.textContent = newTimeBalance;
+  // прибавить отработанное время минус 8ч
+
+  fetch("/app/timeCards", {
+    method: "POST",
+    body: JSON.stringify({
+      dayEndTime: dayEndTime,
+      dayWorkTimeTotal: dayWorkTimeTotal,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
+
+  fetch("/app/state", {
+    method: "PATCH",
+    body: JSON.stringify({
+      timeForcast: "",
+      startPauseButtonClass: "btn_start",
+      timeBalance: newTimeBalance,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
 });
 
 // https://thecode.media/xhr/
