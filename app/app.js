@@ -159,7 +159,6 @@ fetch("/app/timeCardTemplate.html")
               ".time-card:last-child tbody",
             ); // todo используется многократно
             for (let i = 0; i < timeCard.breaks.length; i++) {
-             
               if (i % 2 === 0) {
                 breaksTable.append(document.createElement("tr"));
               }
@@ -241,8 +240,6 @@ startPauseButton.addEventListener("click", function () {
             ".day-block__week-day-value",
           ).textContent = weekDay;
 
-          //TODO как вычислять прошедшее время, если времена текстовые в коде и на сервере? Использовать тег time?
-
           currentDayCard.querySelector(
             ".day-timeline__start-time-value",
           ).textContent = dayStartTime;
@@ -292,7 +289,7 @@ startPauseButton.addEventListener("click", function () {
       );
       const dayStartTime = lastBreak.textContent;
 
-      lastBreak.textContent += ` - ${breakEndTime}`; // TODO исправить добавление 2го перерыва в tr
+      lastBreak.textContent += ` - ${breakEndTime}`; 
       const breakTimeTotal = calcElapsedTime(dayStartTime, breakEndTime);
       // добавить продолжительность перерыва
       breaksTable.querySelector("tr:last-child").insertCell().textContent =
@@ -333,7 +330,7 @@ startPauseButton.addEventListener("click", function () {
         },
       })
         .then((response) => response.json())
-        .then((json) => console.log(json)); //TODO отправить статус кнопки
+        .then((json) => console.log(json)); 
 
       // поменять значение прогноза в ячейке
       // отправить  все на сервер

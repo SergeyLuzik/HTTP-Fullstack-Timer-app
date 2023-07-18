@@ -23,10 +23,6 @@ function logFileChange(reqType, fileName, massage, data) {
 //create a server object:
 http
   .createServer(function (req, res) {
-    /*TODO добавить везде try{} catch(err){console.log("Ошибка!" + err);
-              res.writeHead(500, { "Content-Type": "text/plain" });
-              res.write("Ошибка!" + err);
-              res.end();}*/
     if (req.method === "GET") {
       switch (req.url) {
         case "/":
@@ -193,7 +189,6 @@ http
       }
     } else if (req.method === "POST") {
       if (req.url === "/app/timeCards") {
-        // todo добалвение дааных о конце дня (либо два пути timeCards/newDay, timeCards/endDay, либо в обраотке timeCards - если передают время начала дня, то в конец массива, если передают конец, то в timeCards[timeCards.length - 1] )
         try {
           let body = "";
           req
