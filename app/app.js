@@ -153,7 +153,7 @@ fetch("/app/timeCardTemplate.html")
           );
           timeCardsList.insertAdjacentHTML("beforeend", filledTimeCard);
 
-          if (timeCard.breaks.length > 0) {
+          if (timeCard.breaks !== undefined /*timeCard.breaks.length > 0*/) {
             // todo спросить у GPT эффективный алгоритм вставки перерывов
             let breaksTable = document.querySelector(
               ".time-card:last-child tbody",
@@ -289,7 +289,7 @@ startPauseButton.addEventListener("click", function () {
       );
       const dayStartTime = lastBreak.textContent;
 
-      lastBreak.textContent += ` - ${breakEndTime}`; 
+      lastBreak.textContent += ` - ${breakEndTime}`;
       const breakTimeTotal = calcElapsedTime(dayStartTime, breakEndTime);
       // добавить продолжительность перерыва
       breaksTable.querySelector("tr:last-child").insertCell().textContent =
@@ -330,7 +330,7 @@ startPauseButton.addEventListener("click", function () {
         },
       })
         .then((response) => response.json())
-        .then((json) => console.log(json)); 
+        .then((json) => console.log(json));
 
       // поменять значение прогноза в ячейке
       // отправить  все на сервер
