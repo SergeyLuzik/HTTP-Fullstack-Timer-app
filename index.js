@@ -72,8 +72,8 @@ http
         case "/app/svg/play.svg":
           try {
             fs.readFile("./app/svg/play.svg").then((contents) => {
-              res.write(contents);
-              res.end();
+              res.setHeader("Content-Type", "image/svg+xml");
+              res.end(contents);
             });
           } catch (err) {
             console.log("Ошибка!" + err);
@@ -86,8 +86,8 @@ http
         case "/app/svg/pause.svg":
           try {
             fs.readFile("./app/svg/pause.svg").then((contents) => {
-              res.write(contents);
-              res.end();
+              res.setHeader("Content-Type", "image/svg+xml");
+              res.end(contents);
             });
           } catch (err) {
             console.log("Ошибка!" + err);
