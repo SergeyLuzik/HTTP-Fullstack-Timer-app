@@ -26,14 +26,15 @@ https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-pract
  */
 
 body {
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   font-family: sans-serif;
-  margin: 0;
+  margin: 8px;
 
-  width: 390px;
+  /*width: 390px;*/
   font-family: "Nunito", sans-serif;
   font-weight: 700;
   /*height: 844px;*/
@@ -55,7 +56,7 @@ p {
   justify-content: flex-end;
   padding: 8px;
   gap: 8px;
-  width: 374px;
+  width: 100%;
   height: 48px;
   border-radius: var(--block-border-radius);
   background: var(--main-color);
@@ -80,12 +81,13 @@ p {
 }
 
 .time-cards__download-more-btn {
-  width: 132px;
-  height: 28px;
+  /*width: 132px;
+  height: 28px;*/
   border: 0;
   display: block;
   margin: 8px auto;
   border-radius: var(--block-border-radius);
+  padding: 3px 10px;
   background: var(--white-color);
   border: 1px solid rgba(0, 0, 0, 0.02);
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.08);
@@ -101,7 +103,7 @@ p {
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: var(--main-color) #e8e8e8;
-  width: 366px;
+  width: 100% /*366px*/;
   height: calc(100vh - 120px);
 }
 
@@ -126,8 +128,11 @@ p {
 }
 .time-card {
   display: flex;
-  width: 358px;
-  height: 100px;
+  justify-content: space-between;
+  margin-right: 4px;
+  /*width: 358px;*/
+  /*width: 100%;*/
+  min-height: 100px;
   background: var(--white-color);
   /* padding: 16px 16px 16px 8px;*/
   border-radius: var(--block-border-radius);
@@ -141,7 +146,8 @@ p {
   height: 60px;
   border-radius: 14px;
   background: var(--middle-color);
-  margin: auto 16px auto 4px;
+  /*margin: auto 16px auto 4px;*/
+  margin: auto 4px;
   padding: 4px;
   color: var(--main-color);
   letter-spacing: -0.055em;
@@ -166,23 +172,32 @@ p {
   font-weight: 800;
 }
 
+.time-card__day-info {
+  width: 80%;
+  margin-right: 4px;
+}
+
 .time-card__day-timeline {
   margin-top: 16px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 16px;
-  width: 266px;
+  /*width: 266px;*/
   font-size: 17px;
   letter-spacing: -0.06em;
 }
 
 .day-timeline__start-time,
 .day-timeline__end-time {
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 52px;
+  /*width: 52px;*/
+  min-width: 40px;
   height: 20px;
+  padding: 0 4px;
+
   border-radius: 12px;
   background: var(--middle-color);
   color: var(--main-color);
@@ -190,11 +205,15 @@ p {
 
 .day-timeline__work-time-total {
   position: relative;
+  /*z-index: 1;*/
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 82px;
+  /*width: 82px;*/
+  min-width: 60px;
   height: 20px;
+  padding: 0 4px;
+
   border-radius: 12px;
   background: var(--main-color);
   color: var(--white-color);
@@ -202,25 +221,36 @@ p {
 
 .day-timeline__work-time-total::before,
 .day-timeline__work-time-total::after {
+  /*z-index: 0;*/
   content: "";
   position: absolute;
-
-  width: 40px;
+  width: 30vw;
   border-bottom: dashed 2px var(--main-color);
 }
 
+.day-timeline__work-time-total p {
+  z-index: 1;
+}
+/*todo calc vw и px (ширина экрана - сколько-то px)
+todo задать баблам со временем z-index = 1, чтобы не заползали штрихи
+*/
+
 .day-timeline__work-time-total::after {
-  left: -40px;
+  left: -25vw;
 }
 
 .day-timeline__work-time-total::before {
-  left: 82px;
+  left: 10vw;
+}
+
+.time-card__breaks {
+  width: 100%;
 }
 
 .time-card__breaks td {
   padding: 0 0 4px 0;
   line-height: 10px;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: -0.08em;
 }
 
@@ -239,15 +269,18 @@ p {
 }
 
 .control-panel {
-  width: 374px;
+  width: 100% /*374px*/;
   height: 72px;
 }
 
 .control-panel__block {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  width: 374px;
+  width: 100% /*374px*/;
   height: 64px;
+  padding-left: 4px;
+  padding-right: 12px;
   background: var(--main-color);
   border-radius: var(--block-border-radius);
 }
@@ -255,7 +288,7 @@ p {
 .control-panel__btn-start-pause {
   /* todo добавить на кнопки стиль при нажатии scale? уменьшить и увеличить*/
   display: block;
-  margin-left: 4px;
+  /*margin-left: 4px;*/
   width: 72px;
   height: 72px;
   border-radius: 50%;
@@ -280,7 +313,7 @@ p {
 }
 
 .control-panel__btn-stop {
-  margin-left: 24px;
+  /* margin-left: 24px;*/
   display: block;
   border: 0;
   border-radius: 6px;
@@ -294,23 +327,26 @@ p {
 }
 
 .control-panel__time-forcast-text {
-  margin-left: 16px;
-  width: 102px;
+  /* margin-left: 16px;*/
+  width: 90px;
+  margin-right: 4px;
   text-align: right;
   color: var(--white-color);
-  font-size: 17px;
-  line-height: 17px;
+  font-size: 15px;
+  line-height: 15px;
   letter-spacing: -0.03em;
 }
 
 .control-panel__time-forcast-wrapper {
   display: flex;
-  margin-left: 8px;
+  /* margin-left: 8px;*/
   align-items: center;
   justify-content: center;
-  width: 96px;
+  /*width: 96px;*/
+  min-width: 78px;
   height: 40px;
   border-radius: var(--block-border-radius);
+  padding: 0 8px;
   background-color: var(--white-color);
   color: var(--main-color);
   font-size: 24px;
