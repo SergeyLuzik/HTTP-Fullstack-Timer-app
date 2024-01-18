@@ -230,7 +230,15 @@ startPauseButton.addEventListener("click", function () {
           //const hours = currentDate.getHours();
           const minutes = formatMinutes(currentDate.getMinutes());
           const dayStartTime = `${currentDate.getHours()}:${minutes}`;
-          const timeForcast = `${currentDate.getHours() + 8}:${minutes}`;
+          // добавление к времени начала 8ч 30м
+          let dayEndHour = currentDate.getHours() + 8;
+          let dayEndMinutes = currentDate.getMinutes() + 30;
+          if (dayEndMinutes >= 60) {
+            dayEndMinutes -= 60;
+            dayEndHour += 1;
+          }
+          const timeForcast = `${dayEndHour}:${formatMinutes(dayEndMinutes)}`;
+          // const timeForcast = `${currentDate.getHours() + 8}:${minutes}`; // todo переделать на добавление 8ч 30 м
 
           currentDayCard.querySelector(
             ".day-block__month-day-value",
@@ -397,7 +405,7 @@ stopButton.addEventListener("click", function () {
   ).textContent = dayEndTime; // поставить время окончания дня
   // расчитать отработанное время за день
   //(в прогнозе окончания дня стоит время 8ч, от него отнимать время конца дня чтобы расчитать сколько часов отработал)
-  const eightHoursInMillisec = 28800000;
+  const eightHoursInMillisec = 30600000; //28800000 старое время, теперь отнимаем 8ч 30 мин
   const endDayTimeForcastTimeDifference =
     currentDate - convertToDateObj(timeForcast);
   const dayWorkTimeTotal = toHumanReadFormat(
